@@ -1,11 +1,51 @@
-This package was debianized by Achim Dreyer <adreyer@adreyer.de> on
-Sun, 22 Oct 2006 14:22:39 +0100.
+Initial Debianization:
+This package was debianized by Erik Wenzel <erik@debian.org> on 
+So Aug 13 14:11:42 CEST 2006
 
-It was downloaded from http://www.ipflow.utc.fr/index.php/Cisco_7200_Simulator
+Source:
+It was downloaded from http://www.ipflow.utc.fr/dynamips/
 
-Upstream Author: Christophe Fillot <cf@utc.fr>
+Upstream Authors and Copyright 2005-2007:
+Fabien Devaux, Christophe Fillot, MtvE
 
-Copyright: 2005,2006 Christophe Fillot.
+Header files from mono project:
+amd64-codegen.h:  Paolo Molaro (lupus@ximian.com), 
+ Intel Corporation (ORP Project), Sergey Chaban (serge@wildwestsoftware.com)
+ Dietmar Maurer (dietmar@ximian.com), Patrik Torstensson, Zalman Stern
+x86-codegen.h: Paolo Molaro (lupus@ximian.com), Intel Corporation (ORP Project)
+ Sergey Chaban (serge@wildwestsoftware.com), Dietmar Maurer (dietmar@ximian.com)
+ Patrik Torstensson
+ 
+ The C# Compiler is released under the terms of the GNU GPL.
+ On Debian systems, the complete text of the GNU General Public
+ License can be found in /usr/share/common-licenses/GPL file.
+
+ Copyright (c) 2001-2005 Novell
+
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+
+ The above copyright notice and this permission notice shall be included
+ in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ The Mono runtime and the Mono C# Compiler are also available under a
+ proprietary license for those who can not use the LGPL and the GPL in
+ their code.
+
+All other files have a GPL Licence:
 
 License:
 
@@ -26,9 +66,3 @@ License:
 On Debian systems, the complete text of the GNU General
 Public License can be found in `/usr/share/common-licenses/GPL'.
 
-The Debian packaging is (C) 2006, Achim Dreyer <adreyer@adreyer.de> and
-is licensed under the GPL, see above.
-
-
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.

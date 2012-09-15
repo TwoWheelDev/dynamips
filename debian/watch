@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/-//" \
+          http://www.ipflow.utc.fr/dynamips/dynamips-([\d\.]+-*R*C*\d*)\.tar\.gz

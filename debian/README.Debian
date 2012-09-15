@@ -1,0 +1,9 @@
+In order to use dynmips you need to have a Cisco IOS Image for 7200
+Router Series. The Image is not part of this software!
+
+
+Dynamips is not DSFG compliant and will be included in non-free until
+"mircocode" binary in source tree is compilable from source. Therefor a
+Cross-Compiler-Environment is needed, which is not the case right now.
+
+Erik Wenzel <erik@debian.org>, Sat Jan 13 15:09:56 UTC 2007

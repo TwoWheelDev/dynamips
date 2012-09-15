@@ -1,0 +1,12 @@
+diff -urNad dynamips~/nvram_export.1 dynamips/nvram_export.1
+--- dynamips~/nvram_export.1	2007-10-17 06:48:50.000000000 +0000
++++ dynamips/nvram_export.1	2008-03-27 23:14:04.000000000 +0000
+@@ -26,7 +26,7 @@
+ .UR
+ http://hacki.at/7200emu/index.php
+ .UE
+-.fBdynamips\fP(1)
++\fBdynamips\fP(1)
+ .SH AUTHOR
+ \fBdynamips\fP was written by Fabien Devaux, Christophe Fillot (cf@utc.fr)
+ and MtvE. This manual page was written by Erik Wenzel <erik@debian.org>

@@ -1,6 +1,183 @@
-dynamips (0.2.6-RC2-1) unstable; urgency=low
+dynamips (0.2.7-0.2.8RC2-5.1) unstable; urgency=low
 
-  * Initial release (Closes: #383068)
+  * Non-maintainer upload.
+  * Fix "FTBFS with multiarch paths: cc: error: /usr/lib/libelf.a: No
+    such file or directory": add patch libelf.patch: just use "-lelf".
+    (Closes: #682412).
+    Thanks to gregor herrmann for providing a patch.
 
- -- Achim Dreyer <adreyer@adreyer.de>  Sat, 21 Oct 2006 14:48:59 +0100
+ -- Arno Töll <arno@debian.org>  Sat, 15 Sep 2012 20:55:37 +0200
 
+dynamips (0.2.7-0.2.8RC2-5) unstable; urgency=low
+
+  * [36efa51e] changed patch system from dpatch to quilt
+  * [810c744d] [debian/control] bumped standards version
+
+ -- Erik Wenzel <erik@debian.org>  Fri, 10 Sep 2010 23:12:09 +0000
+
+dynamips (0.2.7-0.2.8RC2-4) unstable; urgency=low
+
+  * [5530548a] [patch] added 70_console_bind to allow binds to a
+    configurable inet address (Closes: #504669) - thanks to Justin Azoff
+    <JAzoff@uamail.albany.edu>
+  * [88fd2973] changed file modes in patch dir und removed extra cleanup
+    in clean target of rules
+
+ -- Erik Wenzel <erik@debian.org>  Wed, 04 Feb 2009 22:26:05 +0100
+
+dynamips (0.2.7-0.2.8RC2-3) unstable; urgency=low
+
+  * [1a8805d8] [rules] added mode fix for debian patches in clean target
+  * [064d8cd6] [control] bumped standards-version; added
+    debian/README.source
+  * [de110875] [rules] removed architecture fixes
+  * [fd03c6f8] integrated 90_fix_Makefile_architectures from ubuntu
+    (Closes: 468797) - thanks to Luca Falavigna <dktrkranz@ubuntu.com>
+  * [4113547e] integraded 91_hppa_support.dpatch from ubuntu - thanks to
+    Luca Falavigna <dktrkranz@ubuntu.com>
+  * [87845f36] [control] added vcs fields
+  * [b9556304] [control] added misc:depends as lintian suggests
+  * [fcdd1b50] [control] fixed typo in depends line
+  * [f8766421] removed empty {post,pre}{inst,rm}
+
+ -- Erik Wenzel <erik@debian.org>  Thu, 22 Jan 2009 00:29:33 +0100
+
+dynamips (0.2.7-0.2.8RC2-2) unstable; urgency=low
+
+  * [control] added DebTags
+  * [control] bumped standards-version
+  * [control] added Homepage field
+  * [control] fixed Build dependency
+  * [copyright] added years
+  * added 65_man_macro_fixes.dpatch
+
+ -- Erik Wenzel <erik@debian.org>  Thu, 27 Mar 2008 23:28:47 +0000
+
+dynamips (0.2.7-0.2.8RC2-1) unstable; urgency=low
+
+  * New upstream release
+  * [hypervisor_mode.7] fixed NAME for mandb update on whatis and
+    apropos
+  * [control] added gns3 client information
+
+ -- Erik Wenzel <erik@debian.org>  Wed, 17 Oct 2007 06:22:05 +0000
+
+dynamips (0.2.7-0.2.8RC1-1) unstable; urgency=low
+
+  * New upstream release
+  * [control] changed description
+
+ -- Erik Wenzel <erik@debian.org>  Mon, 10 Sep 2007 11:17:29 +0000
+
+dynamips (0.2.7-1) unstable; urgency=low
+
+  * New upstream release
+  * [control] removed uploader
+
+ -- Erik Wenzel <erik@debian.org>  Fri, 15 Jun 2007 15:42:44 +0000
+
+dynamips (0.2.6-0.2.7RC3-1) unstable; urgency=low
+
+  * New upstream release
+  * created 40_fix_Makefile_linux_pcap_path patch
+  * lintian: fixed typo in README.Debian
+
+ -- Erik Wenzel <erik@debian.org>  Sun, 06 May 2007 09:29:17 +0000
+
+dynamips (0.2.6-0.2.7RC1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Wed, 21 Feb 2007 19:11:37 +0100
+
+dynamips (0.2.5-0.2.6RC5-2) unstable; urgency=low
+
+  * [control] changed section to non-free
+  * Initial release. (Closes: #383068)
+  * corrected version string
+  * [copyright] updated license statements on 2 header files
+
+ -- Erik Wenzel <erik@debian.org>  Sat, 13 Jan 2007 15:16:50 +0000
+
+dynamips (0.2.6RC5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Thu, 21 Dec 2006 14:08:21 +0000
+
+dynamips (0.2.6RC4-1) unstable; urgency=low
+
+  * new upstream release
+  * changed dependency from libelfg0-dev to libelf-dev
+  * removed 10_makefile_install_target.dpatch. integrated in upstream
+  * removed 15_makefile_man_targets.dpatch. partly integrated in upstream
+  * renamed 20_fix_Makefile_clean_target.dpatch
+  * created 30_fix_Makefile_man_path.dpatch
+  * created 35_fix_Makefile_etc.dpatch
+  * removed debian/ dir shipped with upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Mon, 20 Nov 2006 00:29:25 +0100
+
+dynamips (0.2.6RC2-2) unstable; urgency=low
+
+  * Upstream included COPYING file with GNU Licence statement in v0.2.5
+    (Closes: #383068)
+  * watch file added
+  * removed man pages from debian/, upstream included it in tarball
+  * using dpatch now
+  * created 10_makefile_install_target.dpatch
+  * created 15_makefile_man_targets.dpatch: ifdef for Linux inspired by
+    "Achim Dreyer" <adreyer@adreyer.de>, thanks.
+  * created 20_fix_clean_target.dpatch
+  * created 30_use_sharedlib.dpatch
+  * install README.hypervisor doc directory
+
+ -- Erik Wenzel <erik@debian.org>  Mon, 23 Oct 2006 00:45:34 +0200
+
+dynamips (0.2.6RC2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Thu, 19 Oct 2006 16:21:04 +0200
+
+dynamips (0.2.6RC1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Sun, 15 Oct 2006 23:02:03 +0200
+
+dynamips (0.2.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Sat, 16 Sep 2006 14:27:20 +0200
+
+dynamips (0.2.4-0.2.5RC5-2) unstable; urgency=low
+
+  * included nvram_export installation in Makefile patch
+  * dynamips man page written
+  * nvram_export man page written
+  * hypervisor_mode man page written
+
+ -- Erik Wenzel <erik@debian.org>  Sun, 10 Sep 2006 23:15:58 +0200
+
+dynamips (0.2.4-0.2.5RC5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Tue,  5 Sep 2006 08:31:51 +0200
+
+dynamips (0.2.4-0.2.5RC2-2) unstable; urgency=low
+
+  * [control]: Changed Section to contrib/net
+  * [copyright]: added copyright information on header files
+
+ -- Erik Wenzel <erik@debian.org>  Mon, 21 Aug 2006 11:56:23 +0200
+
+dynamips (0.2.4-0.2.5RC2-1) unstable; urgency=low
+
+  * Initial release. (Closes: #383068)
+  * created control, copyright, rules, changelog files
+  * Patch written: Makefile_install_target
+
+ -- Erik Wenzel <erik@debian.org>  Tue,  15 Aug 2006 22:11:56 +0200

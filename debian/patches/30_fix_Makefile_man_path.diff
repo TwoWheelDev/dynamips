@@ -1,0 +1,19 @@
+diff -urNad dynamips-0.2.6-RC4~/Makefile dynamips-0.2.6-RC4/Makefile
+--- dynamips-0.2.6-RC4~/Makefile	2006-11-19 23:52:46.000000000 +0100
++++ dynamips-0.2.6-RC4/Makefile	2006-11-19 23:57:13.000000000 +0100
+@@ -200,11 +200,11 @@
+ 
+ install: $(PROG) nvram_export
+ 	@echo "Installing"
+-	install -d $(DESTDIR)/bin $(DESTDIR)/man/man1 $(DESTDIR)/man/man7 $(DESTDIR)/etc
++	install -d $(DESTDIR)/bin $(DESTDIR)/share/man/man1 $(DESTDIR)/share/man/man7 $(DESTDIR)/etc
+ 	install dynamips nvram_export   $(DESTDIR)/bin
+-	install -m644 dynamips.1        $(DESTDIR)/man/man1
+-	install -m644 nvram_export.1    $(DESTDIR)/man/man1
+-	install -m644 hypervisor_mode.7 $(DESTDIR)/man/man7
++	install -m644 dynamips.1        $(DESTDIR)/share/man/man1
++	install -m644 nvram_export.1    $(DESTDIR)/share/man/man1
++	install -m644 hypervisor_mode.7 $(DESTDIR)/share/man/man7
+ # install -m644 example         $(DESTDIR)/etc/dynamips
+ 
+ 
