@@ -1,19 +1,13 @@
 #!/usr/bin/make -f
-# Copyright © 2003 Colin Walters <walters@verbum.org>
-# Copyright © 2004, 2005, 2006 Loic Minier <lool@dooz.org>
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/patchsys-quilt.mk
-include /usr/share/cdbs/1/class/makefile.mk
+%:
+	dh $@
 
-# define clean taget
-DEB_MAKE_CLEAN_TARGET = clean
+override_dh_compress:
+	dh_compress -XREADME
 
-DEB_MAKE_INVOKE = $(DEB_MAKE_ENVVARS) make -C $(DEB_BUILDDIR)
-
-DEB_MAKE_INSTALL_TARGET = install DESTDIR=$(CURDIR)/debian/dynamips/usr/
-
-cleanbuilddir::
-	-rm nvram_export
-	-rm *.o
-
+# Add here commands to install the package into debian/dynamips.
+override_dh_auto_install:
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/dynamips/usr
