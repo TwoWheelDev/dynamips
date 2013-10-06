@@ -1,0 +1,38 @@
+Release Notes for Cisco router simulator (Dynamips)
+===================================================
+
+Version:  v0.2.10
+
+Release date:  Saturday, September 7, 2013 (2013-09-07)
+
+Source code:  https://github.com/GNS3/dynamips/tree/v0.2.10
+
+License: GNU GPLv2
+
+
+What's New since v0.2.9
+=======================
+
+The NVRAM configuration file private-config is fully supported.
+The standalone tool nvram_export supports all known formats.
+Updated documentation.
+All compilation warning are fixed.
+
+Implemented enhancement #15 - extend hypervisor commands push_config, extract_config, and set_config
+Implemented enhancement #16 - reimplement nvram_export
+Fixed issue #17 - Dynamips hangs on startup if no (or unknown) parameters are given v0.2.8 and 0.2.9
+
+
+Known Issues
+============
+
+There is lots of missing hardware functionality.
+  - https://github.com/GNS3/dynamips/issues/5
+
+Reload from the router console doesn't work.
+  - https://github.com/GNS3/dynamips/issues/6
+
+Using a self decompressing image can lead to an invalid IA and stop the cpu.
+  - https://github.com/GNS3/dynamips/issues/8
+
+There are still memory leaks.
