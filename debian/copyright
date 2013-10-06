@@ -1,68 +1,37 @@
-Initial Debianization:
-This package was debianized by Erik Wenzel <erik@debian.org> on 
-So Aug 13 14:11:42 CEST 2006
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: dynamips
+Source: http://www.gns3.net
 
-Source:
-It was downloaded from http://www.ipflow.utc.fr/dynamips/
+Files: *
+Copyright: 2005-2007 Fabien Devaux, Christophe Fillot, MtvE 
+	   2010-2013 Jeremy Grossman       
+License: GPL-2.0+
 
-Upstream Authors and Copyright 2005-2007:
-Fabien Devaux, Christophe Fillot, MtvE
+Files: debian/*
+Copyright: 2013 Daniel Lintott <maint@gns3.serverb.co.uk>
+License: GPL-2.0+
 
-Header files from mono project:
-amd64-codegen.h:  Paolo Molaro (lupus@ximian.com), 
- Intel Corporation (ORP Project), Sergey Chaban (serge@wildwestsoftware.com)
- Dietmar Maurer (dietmar@ximian.com), Patrik Torstensson, Zalman Stern
-x86-codegen.h: Paolo Molaro (lupus@ximian.com), Intel Corporation (ORP Project)
- Sergey Chaban (serge@wildwestsoftware.com), Dietmar Maurer (dietmar@ximian.com)
- Patrik Torstensson
- 
- The C# Compiler is released under the terms of the GNU GPL.
- On Debian systems, the complete text of the GNU General Public
- License can be found in /usr/share/common-licenses/GPL file.
+Files: amd64-codegen.h  
+Copyright: Paolo Molaro (lupus@ximian.com), Intel Corporation (ORP Project), Sergey Chaban (serge@wildwestsoftware.com), Dietmar Maurer (dietmar@ximian.com), Patrik Torstensson, Zalman Stern
+License: GPL-2.0+
 
- Copyright (c) 2001-2005 Novell
+Files: x86-codegen.h
+Copyright: Paolo Molaro (lupus@ximian.com), Intel Corporation (ORP Project), Sergey Chaban (serge@wildwestsoftware.com), Dietmar Maurer (dietmar@ximian.com), Patrik Torstensson
+License: GPL-2.0+
 
- Permission is hereby granted, free of charge, to any person obtaining a
- copy of this software and associated documentation files (the
- "Software"), to deal in the Software without restriction, including
- without limitation the rights to use, copy, modify, merge, publish,
- distribute, sublicense, and/or sell copies of the Software, and to
- permit persons to whom the Software is furnished to do so, subject to
- the following conditions:
-
- The above copyright notice and this permission notice shall be included
- in all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
- The Mono runtime and the Mono C# Compiler are also available under a
- proprietary license for those who can not use the LGPL and the GPL in
- their code.
-
-All other files have a GPL Licence:
-
-License:
-
-   This package is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This package is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this package; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-
-On Debian systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL'.
-
+License: GPL-2.0+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
