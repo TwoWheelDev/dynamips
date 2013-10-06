@@ -1,3 +1,2 @@
 version=3
-opts="uversionmangle=s/-//" \
-          http://www.ipflow.utc.fr/dynamips/dynamips-([\d\.]+-*R*C*\d*)\.tar\.gz
+http://githubredir.debian.net/github/GNS3/dynamips/v(.*).tar.gz
