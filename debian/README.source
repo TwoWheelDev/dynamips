@@ -1,6 +1,0 @@
-= Building dynamips for Debian =
-
-Patches are created and organized with dpatch. The package is build with
-git-buildpackage and uses cdbs for minimized debian/ overhead.
-
--- Erik Wenzel <erik@debian.org>  Wed Jan 21 22:36:19 CET 2009
