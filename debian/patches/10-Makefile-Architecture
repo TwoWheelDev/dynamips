@@ -6,8 +6,8 @@ Forwarded: no
 ---
 Index: dynamips/Makefile
 ===================================================================
---- dynamips.orig/Makefile	2013-10-06 19:20:45.161559378 +0100
-+++ dynamips/Makefile	2013-10-06 19:21:42.716835808 +0100
+--- dynamips.orig/Makefile	2013-10-06 21:00:07.730599732 +0100
++++ dynamips/Makefile	2013-10-06 22:39:42.943481134 +0100
 @@ -1,15 +1,25 @@
 -# Makefile for Dynamips 0.2.8
 +# Makefile for Dynamips 0.2.10
@@ -19,18 +19,18 @@ Index: dynamips/Makefile
  #   - Use "nojit" for unsupported architectures.
 -ifeq ($(shell arch),x86_64)
 -export DYNAMIPS_ARCH?=amd64
-+ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),i386)
++ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH),i386)
 +DYNAMIPS_ARCH?=x86
  else
 -ifeq ($(shell arch),i686)
 -export DYNAMIPS_ARCH?=x86
-+ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),lpia)
++ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH),lpia)
 +DYNAMIPS_ARCH?=x86
 +else
-+ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),amd64)
++ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH),amd64)
 +DYNAMIPS_ARCH?=amd64
 +else
-+ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),powerpc)
++ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH),powerpc)
 +DYNAMIPS_ARCH?=ppc32
 +else
 +DYNAMIPS_ARCH?=nojit
