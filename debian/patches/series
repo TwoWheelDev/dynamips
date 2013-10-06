@@ -1,11 +1,1 @@
-20_fix_Makefile_clean_target.diff
-30_fix_Makefile_man_path.diff
-35_fix_Makefile_etc.diff
-40_fix_Makefile_linux_pcap_path.diff
-60_hypervisor_mode_man_name-fix.diff
-65_man_macro_fixes.diff
-70_console_bind.diff
-90_fix_Makefile_architectures.diff
-91_hppa_support.diff
-debian-changes-0.2.7-0.2.8RC2-5
-libelf.patch
+10-Makefile-Architecture
