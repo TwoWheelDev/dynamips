@@ -1,3 +1,18 @@
+dynamips (0.2.10-1) unstable; urgency=low
+
+  * New Maintainer (Closes: #725349)
+  * [f0fade5c] Imported Upstream version 0.2.10
+  * [49cfc9c2] Add new architecture patch
+  * [3c9594b0] Correct spelling in README.debian
+  * [642bb50c] Switch build system to debhelper
+  * [cd423ffa] Update debian/watch file
+  * [c1920d03] Add additional files for debhelper
+  * [c4623795] Convert copyright file to machine readable (DEP-5)
+  * [4e7cb75b] Add postinst script
+  * [ddeaf0eb] Update debian/control
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Sun, 06 Oct 2013 20:28:32 +0100
+
 dynamips (0.2.7-0.2.8RC2-5.1) unstable; urgency=low
 
   * Non-maintainer upload.
