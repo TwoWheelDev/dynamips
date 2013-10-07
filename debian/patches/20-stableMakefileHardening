@@ -4,8 +4,8 @@ Author: Daniel Lintott <daniel@serverb.co.uk>
 ---
 Index: dynamips/stable/Makefile
 ===================================================================
---- dynamips.orig/stable/Makefile	2013-10-06 17:15:46.811826400 +0100
-+++ dynamips/stable/Makefile	2013-10-07 19:52:16.929451192 +0100
+--- dynamips.orig/stable/Makefile	2013-10-07 19:52:32.969249545 +0100
++++ dynamips/stable/Makefile	2013-10-07 20:37:33.203303003 +0100
 @@ -72,7 +72,15 @@
  #   PCAP_LIB=-lpcap
     OSNAME=Linux
@@ -17,7 +17,7 @@ Index: dynamips/stable/Makefile
 +ifeq ($(shell uname), GNU/kFreeBSD)
 +   PTHREAD_LIBS?=-lpthread
 +#   PCAP_LIB=-lpcap
-+   OSNAME=Linux
++   OSNAME=GNU/kFreeBSD
 +   CFLAGS+=-I/usr/include -I. $(PTHREAD_CFLAGS)
 +   LIBS=-L/usr/lib -L. -ldl -lrt -luuid -lelf $(PTHREAD_LIBS) $(LDFLAGS)
     DESTDIR=/usr
