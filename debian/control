@@ -11,8 +11,6 @@ Vcs-Git: https://github.com/dlintott/dynamips.git
 Package: dynamips
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Breaks: dynamips
-Replaces: dynamips
 Suggests: gns3
 Description: Cisco 7200/3600/3725/3745/2600/1700 Router Emulator
  Dynamips emulates Cisco 7200/3600/3725/3745/2600/1700 Routers on a traditional
@@ -22,4 +20,3 @@ Description: Cisco 7200/3600/3725/3745/2600/1700 Router Emulator
  It is simply a complementary tool to real labs for administrators of Cisco
  networks or people wanting to pass their CCNA/CCNP/CCIE exams. For a Command
  Line Interface for dynamips see dynagen or gns3 package.
-Tag: hardware::emulation, implemented-in::c, interface::commandline, interface::daemon, interface::shell, network::TODO, network::routing, network::server, protocol::atm, protocol::ethernet, protocol::ip, protocol::ipv6, role::program, scope::utility, use::checking, use::learning, use::routing, works-with::network-traffic
