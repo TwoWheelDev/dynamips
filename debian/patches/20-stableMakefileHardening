@@ -4,18 +4,34 @@ Author: Daniel Lintott <daniel@serverb.co.uk>
 ---
 Index: dynamips/stable/Makefile
 ===================================================================
---- dynamips.orig/stable/Makefile	2013-10-07 17:26:34.347360332 +0100
-+++ dynamips/stable/Makefile	2013-10-07 17:32:52.450606931 +0100
-@@ -72,7 +72,7 @@
+--- dynamips.orig/stable/Makefile	2013-10-06 17:15:46.811826400 +0100
++++ dynamips/stable/Makefile	2013-10-07 19:52:16.929451192 +0100
+@@ -72,7 +72,15 @@
  #   PCAP_LIB=-lpcap
     OSNAME=Linux
     CFLAGS+=-I/usr/include -I. $(PTHREAD_CFLAGS)
 -   LIBS=-L/usr/lib -L. -ldl -lrt -luuid -lelf $(PTHREAD_LIBS)
 +   LIBS=-L/usr/lib -L. -ldl -lrt -luuid -lelf $(PTHREAD_LIBS) $(LDFLAGS)
++   DESTDIR=/usr
++else
++ifeq ($(shell uname), GNU/kFreeBSD)
++   PTHREAD_LIBS?=-lpthread
++#   PCAP_LIB=-lpcap
++   OSNAME=Linux
++   CFLAGS+=-I/usr/include -I. $(PTHREAD_CFLAGS)
++   LIBS=-L/usr/lib -L. -ldl -lrt -luuid -lelf $(PTHREAD_LIBS) $(LDFLAGS)
     DESTDIR=/usr
  else
  ifeq ($(shell uname -s), Darwin)
-@@ -282,7 +282,7 @@
+@@ -105,6 +113,7 @@
+ endif
+ endif
+ endif
++endif
+ 
+ CFLAGS+=-DOSNAME=$(OSNAME)
+ 
+@@ -282,7 +291,7 @@
  
  nvram_export$(BIN_EXT): nvram_export.o fs_nvram.o
  	@echo "Linking $@"
@@ -24,7 +40,7 @@ Index: dynamips/stable/Makefile
  
  install: $(PROG) nvram_export$(BIN_EXT)
  	@echo "Installing"
-@@ -321,7 +321,7 @@
+@@ -321,7 +330,7 @@
  
  .c.o:
  	@echo "Compiling $<"
