@@ -1,3 +1,10 @@
+dynamips (0.2.10-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Enable autobuild.
+
+ -- Andrew Shadura <andrewsh@debian.org>  Thu, 17 Oct 2013 22:46:37 +0200
+
 dynamips (0.2.10-1) unstable; urgency=low
 
   * New Maintainer (Closes: #725349)
