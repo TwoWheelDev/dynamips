@@ -6,9 +6,9 @@ Forwarded: no
 ---
 Index: dynamips/Makefile
 ===================================================================
---- dynamips.orig/Makefile	2013-10-07 19:52:33.057248438 +0100
-+++ dynamips/Makefile	2013-10-07 20:25:46.388188873 +0100
-@@ -1,15 +1,21 @@
+--- dynamips.orig/Makefile	2013-10-29 11:44:22.408748503 +0000
++++ dynamips/Makefile	2013-10-29 11:53:00.266238154 +0000
+@@ -1,15 +1,17 @@
 -# Makefile for Dynamips 0.2.8
 +# Makefile for Dynamips 0.2.10
  
@@ -26,11 +26,7 @@ Index: dynamips/Makefile
  else
 -ifeq ($(shell arch),i686)
 -export DYNAMIPS_ARCH?=x86
-+ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH_CPU),powerpc)
-+export DYNAMIPS_ARCH?=ppc32
-+else
 +export DYNAMIPS_ARCH?=nojit
-+endif
  endif
  endif
  
