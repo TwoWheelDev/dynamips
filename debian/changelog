@@ -1,3 +1,11 @@
+dynamips (0.2.10-2) unstable; urgency=low
+
+  * [6864f823] Import ARM Support patch from Ubuntu
+  * [d3ad6218] Update Makefile architecture patch (to fix FTBFS on Ubuntu)
+  * [0e8239c6] Update ARM Support patch to include ARM64
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Tue, 29 Oct 2013 12:33:09 +0000
+
 dynamips (0.2.10-1.1) unstable; urgency=low
 
   * Non-maintainer upload.
