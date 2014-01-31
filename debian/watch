@@ -1,2 +1,3 @@
 version=3
-http://githubredir.debian.net/github/GNS3/dynamips/v(.*).tar.gz
+opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/dynamips-$1\.tar\.gz/ \
+  https://github.com/GNS3/dynamips/releases .*/archive/v?(\d\S*)\.tar\.gz
