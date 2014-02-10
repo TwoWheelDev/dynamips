@@ -1,3 +1,17 @@
+dynamips (0.2.11-1) UNRELEASED; urgency=low
+
+  * [ab3a8d82] Bump standards-version to 3.9.5 - no changes
+  * [b792229e] debian/watch - Remove obsolete githubredir
+  * [278818eb] Imported Upstream version 0.2.11
+  * [f1fec7b5] Drop patches applied upstream
+		     + 20-stableMakefileHardening
+		     + 30-arm_support.patch
+  * [4a4ab133] Patches to fix architecture detection in Makefile
+		     + 10-Makefile-Architecture - removed
+		     + MakefileArchitecture.patch - added
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Mon, 10 Feb 2014 20:07:04 +0000
+
 dynamips (0.2.10-2) unstable; urgency=low
 
   * [6864f823] Import ARM Support patch from Ubuntu
