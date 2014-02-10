@@ -11,7 +11,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/mman.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -22,6 +21,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <glob.h>
 
 #include "cpu.h"
 #include "vm.h"
@@ -81,6 +81,34 @@ static int cmd_create(hypervisor_conn_t *conn,int argc,char *argv[])
    return(0);
 }
 
+/* Rename a VM instance */
+static int cmd_rename(hypervisor_conn_t *conn,int argc,char *argv[])
+{
+   vm_instance_t *vm;
+
+   if (!(vm = hypervisor_find_object(conn,argv[0],OBJ_TYPE_VM)))
+      return(-1);
+
+   if (registry_exists(argv[1],OBJ_TYPE_VM)) {
+      vm_release(vm);
+      hypervisor_send_reply(conn,HSC_ERR_RENAME,1,
+                            "unable to rename VM instance '%s', '%s' already exists",
+                            argv[0],argv[1]);
+      return(-1);
+   }
+
+   if (vm_rename_instance(vm,argv[1])) {
+      hypervisor_send_reply(conn,HSC_ERR_RENAME,1,
+                            "unable to rename VM instance '%s'",
+                            argv[0]);
+      return(-1);
+   }
+
+   vm_release(vm);
+   hypervisor_send_reply(conn,HSC_INFO_OK,1,"VM '%s' renamed to '%s'",argv[0],argv[1]);
+   return(0);
+}
+
 /* Delete a VM instance */
 static int cmd_delete(hypervisor_conn_t *conn,int argc,char *argv[])
 {
@@ -95,6 +123,41 @@ static int cmd_delete(hypervisor_conn_t *conn,int argc,char *argv[])
                             "unable to delete VM '%s'",argv[0]);
    }
 
+   return(res);
+}
+
+/* Delete a VM instance and related files */
+static int cmd_clean_delete(hypervisor_conn_t *conn,int argc,char *argv[])
+{
+   int res, i;
+   glob_t globbuf;
+   char *pattern;
+   vm_instance_t *vm;
+
+   if (!(vm = hypervisor_find_object(conn,argv[0],OBJ_TYPE_VM)))
+      return(-1);
+
+   pattern = vm_build_filename(vm, "*");
+   vm_release(vm);
+   res = vm_delete_instance(argv[0]);
+
+   if (res == 1) {
+      /* delete related files (best effort) */
+      if (pattern != NULL && glob(pattern, GLOB_NOSORT, NULL, &globbuf) == 0) {
+         for (i = 0; i < globbuf.gl_pathc; i++) {
+            remove(globbuf.gl_pathv[i]);
+         }
+
+         globfree(&globbuf);
+      }
+
+      hypervisor_send_reply(conn,HSC_INFO_OK,1,"VM '%s' and related files deleted",argv[0]);
+   } else {
+      hypervisor_send_reply(conn,HSC_ERR_DELETE,1,
+                            "unable to delete VM '%s'",argv[0]);
+   }
+
+   free(pattern);
    return(res);
 }
 
@@ -143,6 +206,22 @@ static int cmd_stop(hypervisor_conn_t *conn,int argc,char *argv[])
 
    vm_release(vm);
    hypervisor_send_reply(conn,HSC_INFO_OK,1,"VM '%s' stopped",argv[0]);
+   return(0);
+}
+
+/* Get the status of a VM instance */
+static int cmd_get_status(hypervisor_conn_t *conn,int argc,char *argv[])
+{
+   vm_instance_t *vm;
+   int status;
+
+   if (!(vm = hypervisor_find_object(conn,argv[0],OBJ_TYPE_VM)))
+      return(-1);
+
+   status = vm->status;
+
+   vm_release(vm);
+   hypervisor_send_reply(conn,HSC_INFO_OK,1,"%d",status);
    return(0);
 }
 
@@ -1122,9 +1201,12 @@ static int cmd_vm_list_con_ports(hypervisor_conn_t *conn,int argc,char *argv[])
 /* VM commands */
 static hypervisor_cmd_t vm_cmd_array[] = {
    { "create", 3, 3, cmd_create, NULL },
+   { "rename", 2, 2, cmd_rename, NULL },
    { "delete", 1, 1, cmd_delete, NULL },
+   { "clean_delete", 1, 1, cmd_clean_delete, NULL, },
    { "start", 1, 1, cmd_start, NULL },
    { "stop", 1, 1, cmd_stop, NULL },
+   { "get_status", 1, 1, cmd_get_status, NULL },
    { "set_debug_level", 2, 2, cmd_set_debug_level, NULL },
    { "set_ios", 2, 2, cmd_set_ios, NULL },
    { "set_config", 2, 3, cmd_set_config, NULL },
@@ -1150,7 +1232,7 @@ static hypervisor_cmd_t vm_cmd_array[] = {
    { "set_con_tcp_port", 2, 2, cmd_set_con_tcp_port, NULL },
    { "set_aux_tcp_port", 2, 2, cmd_set_aux_tcp_port, NULL },
    { "extract_config", 1, 1, cmd_extract_config, NULL },
-   { "push_config", 2, 2, cmd_push_config, NULL },
+   { "push_config", 2, 3, cmd_push_config, NULL },
    { "cpu_info", 2, 2, cmd_show_cpu_info, NULL },
    { "cpu_usage", 2, 2, cmd_show_cpu_usage, NULL },
    { "suspend", 1, 1, cmd_suspend, NULL },

@@ -5,6 +5,8 @@ The hypervisor mode of dynamips allows you to run simultaneously
 many virtual router instances, and to simulate ATM, Ethernet
 or Frame-Relay networks. 
 
+Available since version 0.2.5.
+
 Running dynamips in hypervisor mode
 ===================================
 
@@ -18,23 +20,33 @@ dynagen/dynagui that will pass commands transparently. The second method
 is highly recommended.
 
 The command syntax is simple: <module> <function> [arguments...]
-For example: "c7200 start R1" starts virtual instance named "R1".
+For example: "vm start R1" starts virtual instance named "R1".
 
 The modules that are currently defined are given below:
 
-  * hypervisor : General hypervisor management
-  * vm         : General virtual machine (VM) management
-  * c7200      : Virtual instances of Cisco 7200
-  * c3600      : Virtual instances of Cisco 3600
-  * nio        : Network Input/Output (NIO) descriptors
-  * nio_bridge : NIO bridges (shared media)
-  * atmsw      : ATM switches
-  * frsw       : Frame-Relay switches
-  * ethsw      : Ethernet switches
+  * hypervisor   : General hypervisor management
+  * vm           : General virtual machine (VM) management
+  * vm_debug     : General virtual machine (VM) debugging
+  * c7200        : Virtual instances of Cisco 7200
+  * c3745        : Virtual instances of Cisco 3745
+  * c3725        : Virtual instances of Cisco 3725
+  * c3600        : Virtual instances of Cisco 3600
+  * c2691        : Virtual instances of Cisco 2691
+  * c2600        : Virtual instances of Cisco 2600
+  * c1700        : Virtual instances of Cisco 1700
+  * nio          : Network Input/Output (NIO) descriptors
+  * nio_bridge   : NIO bridges (shared media)
+  * atmsw        : ATM switches
+  * atm_bridge   : ATM bridges
+  * frsw         : Frame-Relay switches
+  * ethsw        : Ethernet switches
+  * object_store : Object store
 
 
 Hypervisor management module ("hypervisor")
 ============================================
+
+* "hypervisor version" : Display the version of dynamips.
 
 * "hypervisor module_list" : Display the module list.
 
@@ -45,7 +57,7 @@ Hypervisor management module ("hypervisor")
 
 * "hypervisor stop"  : Destroy all objects and stop hypervisor.
 
-* "hypervisor reset" : Destroy all objects (used to get an empty 
+* "hypervisor reset" : Destroy all objects. (used to get an empty 
   configuration)
 
 * "hypervisor working_dir <directory>" : Set the directory to use to store
@@ -54,11 +66,50 @@ Hypervisor management module ("hypervisor")
 * "hypervisor save_config <filename>" : Save the configuration of all objects
   into the specified file.
 
+* "hypervisor parser_test [<a1> [... <a10>]]" : Display up to 10 arguments.
+  (since version 0.2.6-RC1)
+
+* "hypervisor uuid" : Display the local uuid. (since version 0.2.8-RC3)
+
+* "hypervisor tsg_stats" : Dump statistics about JIT code sharing to 
+  the console. (since version 0.2.8-RC3, unstable)
 
 Virtual Machine module ("vm")
 =============================
 
-* "vm list" : List all VM instances (c7200, c3600).
+* "vm list" : List all VM instances.
+  (c7200, c3745, c3725, c3600, c2691, c2600, c1700)
+
+* "vm list_con_ports" : List all VM console TCP port.
+  (since version 0.2.6-RC5)
+
+* "vm create <instance_name> <instance_id> <platform>" : 
+  Create a new router instance.
+  The ID must be unique and is used to name files on disk.
+  (since version 0.2.8-RC1)
+
+* "vm rename <instance_name> <new_name>" : Rename a router instance.
+  (since version 0.2.11)
+
+* "vm delete <instance_name>" : Delete the specified instance.
+  (since version 0.2.8-RC1)
+
+* "vm clean_delete <instance_name>" : Delete the specified instance and all 
+  the related files (best effort). (since version 0.2.11)
+
+* "vm start <instance_name>" : Start the instance. 
+  At least the IOS image must be set.
+  (since version 0.2.8-RC1)
+
+* "vm stop <instance_name>" : Stop the instance. The settings are kept.
+  (since version 0.2.8-RC1)
+
+* "vm get_status <instance_name>" : Get the status of a VM instance.
+  Return values: 0=inactive, 1=shutting down, 2=running, 3=suspended.
+  (since version 0.2.11)
+
+* "vm set_tsg <instance_name> <group_id>" : Set translation sharing group.
+  (since version 0.2.8-RC3-community, unstable)
 
 * "vm set_debug_level <instance_name> <level>" : Set the debug level
   (which is a number) for a VM. By default, no specific debug is enabled
@@ -72,16 +123,19 @@ Virtual Machine module ("vm")
   private-config in NVRAM when the instance is started.
   To keep existing data, use an empty string ('') for the filename.
   The optional <private_file> is an empty string by default.
+  (supports <private_file> since version 0.2.10)
 
 * "vm extract_config <instance_name>" : Get the contents of the config files 
   startup-config and private-config from NVRAM. The data of each file is 
   encoded in a Base64 string, surrounded by single quotes.
+  (returns private-config since version 0.2.10)
 
 * "vm push_config <instance_name> <startup_cfg> [<private_cfg>]" : 
   Push configuration to the config files startup-config and private-config 
   in NVRAM.
   The data is a Base64 encoded string, or '(keep)' to keep existing data.
   The optional <private_cfg> is '(keep)' by default.
+  (supports <private_cfg> since version 0.2.11)
 
 * "vm set_ram <instance_name> <ram_size>" : Set the RAM size, specified
   in Mbytes.
@@ -93,6 +147,9 @@ Virtual Machine module ("vm")
   of a mapped file to simulate router memory. By default, a mapped file
   is used. This is a bit slower, but requires less memory.
 
+* "vm set_sparse_mem <instance_name> <0|1>" : Enable/disable use of 
+  sparse memory. (since version 0.2.7-RC1)
+
 * "vm suspend <instance_name>" : Suspend execution of the instance.
 
 * "vm resume <instance_name>" : Resume execution of the instance.
@@ -101,9 +158,43 @@ Virtual Machine module ("vm")
   divisor value. The higher is the value, the faster is the clock in the
   virtual machine. The default is 4, but it is often required to adjust it.
 
+* "vm set_blk_direct_jump <instance_name> <0|1>" : Enable/disable use 
+  of block direct jump. (compatibility option, since version 0.2.7-RC2)
+
 * "vm set_idle_pc <instance_name> <pc_value>" : Set the idle Pointer
   Counter (PC). You must determine it through the method explained in the
   main README file.
+
+* "vm set_idle_pc_online <instace_name> <cpu_id> <pc_value>" : 
+  Set the idle PC value when the CPU is online.
+  (since version 0.2.6-RC2)
+
+* "vm get_idle_pc_prop <instance_name> <cpu_id>" : 
+  Get the idle PC proposals.
+  Takes 1000 measurements and records up to 10 idle PC proposals.
+  There is a 10ms wait between each measurement.
+  (since version 0.2.6-RC2)
+
+* "vm show_idle_pc_prop <instance_name> <cpu_id>" : 
+  Dump the idle PC proposals. (since version 0.2.6-RC2)
+
+* "vm set_idle_max <instance_name> <cpu_id> <idle_max>" : 
+  Set CPU idle max value. (since version 0.2.6-RC2)
+
+* "vm set_idle_sleep_time <instance_name> <cpu_id> <idle_sleep_time>" : 
+  Set CPU idle sleep time value. (since version 0.2.6-RC2)
+
+* "vm show_timer_drift <instance_name> <cpu_id>" : 
+  Show info about potential timer drift.
+  (since version 0.2.6-RC3)
+
+* "vm set_ghost_file <instance_name> <ghost_ram_filename>" : 
+  Set ghost RAM file. (since version 0.2.6-RC3, 
+  needs an extra bogus argument before version 0.2.6-RC4)
+
+* "vm set_ghost_status <instance_name> <ghost_status>" : 
+  Set ghost RAM status. (since version 0.2.6-RC3, 
+  needs an extra bogus argument before version 0.2.6-RC4)
 
 * "vm set_exec_area <instance_name> <area_size>" : Set the exec area
   size. The exec area is a pool of host memory used to store pages
@@ -131,69 +222,162 @@ Virtual Machine module ("vm")
 * "vm cpu_usage <instance_name> <cpu_id>" : Show cpu usage of dynamips in 
   seconds. (experimental)
   The instance must exist, "cpu_id" is ignored.
+  (since version 0.2.8-RC5-community)
+
+* "vm send_con_msg <instance_name> <str>" : 
+  Send a message on the console. (since version 0.2.6-RC3)
+
+* "vm send_aux_msg <instance_name> <str>" : 
+  Send a message on the AUX port. (since version 0.2.6-RC3)
+
+* "vm slot_bindings <instance_name>" : 
+  Show slot bindings. (since version 0.2.8-RC1)
+
+* "vm slot_nio_bindings <instance_name> <slot_id>" : 
+  Show NIO bindings for the specified slot. (since version 0.2.8-RC1)
+
+* "vm slot_add_binding <instance_name> <slot_id> <port_id> <dev_type>" : 
+  Add a slot binding. (since version 0.2.8-RC1)
+
+* "vm slot_remove_binding <instance_name> <slot_id> <port_id>" : 
+  Remove a slot binding . (since version 0.2.8-RC1)
+
+* "vm slot_add_nio_binding <instance_name> <slot_id> <port_id> <nio_name>" : 
+  Add a NIO binding for a slot/port. (since version 0.2.8-RC1)
+
+* "vm slot_remove_nio_binding <instance_name> <slot_id> <port_id>" : 
+  Remove a NIO binding for a slot/port. (since version 0.2.8-RC1)
+
+* "vm slot_enable_nio <instance_name> <slot_id> <port_id>" : 
+  Enable NIO of the specified slot/port. (since version 0.2.8-RC1)
+
+* "vm slot_disable_nio <instance_name> <slot_id> <port_id>" : 
+  Disable NIO of the specified slot/port. (since version 0.2.8-RC1)
+
+* "vm slot_oir_start <instance_name> <slot_id> <subslot_id>" : 
+  OIR to start a slot/subslot. (since version 0.2.8-RC3-community)
+
+* "vm slot_oir_stop <isntance_name> <slot_id> <subslot_id>" : 
+  OIR to stop a slot/subslot. (since version 0.2.8-RC3-community)
+
+
+Virtual Machine debugging module ("vm_debug")
+=======================================
+
+Available since version 0.2.6-RC1.
+
+* "vm_debug show_cpu_regs <instance_name> <cpu_id>" : 
+  Dump CPU registers to the console.
+
+* "vm_debug show_cpu_mmu <instance_name> <cpu_id>" : 
+  Dump CPU MMU info to the console. (since version 0.2.7-RC1)
+
+* "vm_debug set_cpu_reg <instance_name> <cpu_id> <reg_id> <value>" : 
+  Set the value of a CPU register.
+
+* "vm_debug add_cpu_breakpoint <instance_name> <cpu_id> <address>" : 
+  Add a breakpoint.
+
+* "vm_debug remove_cpu_breakpoint <instance_name> <cpu_id> <address>" : 
+  Remove a breakpoint.
+
+* "vm_debug pmem_w32 <instance_name> <cpu_id> <address> <value>" : 
+  Write a 32-bit memory word to physical memory.
+
+* "vm_debug pmem_r32 <instance_name> <cpu_id> <address>" : 
+  Read a 32-bit memory word from physical memory.
+
+* "vm_debug pmem_w16 <instance_name> <cpu_id> <address> <value>" : 
+  Write a 16-bit memory word to physical memory.
+
+* "vm_debug pmem_r16 <instance_name> <cpu_id> <address>" : 
+  Read a 16-bit memory word from physical memory.
+
 
 Virtual Cisco 7200 instances module ("c7200")
 ==============================================
 
 * "c7200 list" : List all existing Cisco 7200 instances.
 
-* "c7200 create <instance_name> <instance_id>" : Create a new router 
-  instance. The ID must be unique and is used to name files on disk.
-
-* "c7200 delete <instance_name>" : Delete the specified instance.
-
-* "c7200 start <instance_name>" : Start the instance. 
-  At least the IOS image must be set.
-
-* "c7200 stop <instance_name>" : Stop the instance. The settings are kept.
-
 * "c7200 set_npe <instance_name> <npe_name>" : Set the NPE model.
-  For example: npe-100, npe-400, ... The default is "npe-200".
+  For example: npe-100, npe-400, ... The default is "npe-400".
 
 * "c7200 set_midplane <instance_name> <midplane_name>" : Set the midplane
   model, it can be either "std" or "vxr". The default is "vxr".
 
-* "c7200 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+* "c7200 get_mac_addr <instance_name>" : Get the base MAC
   address of the router. By default, the address is automatically generated
   with this pattern : ca<instance_id>.<process_pid>.0000 (Cisco format).
+  (since version 0.2.11)
 
-* "c7200 add_pa_binding <instance_name> <slot> <pa_type>" : Add a
-  Port Adapter binding for the specified slot.
-  For example: "c7200 add_pa_binding R1 1 PA-A1" adds a PA-A1 card into
-  slot 1.
+* "c7200 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+  address of the router. The MAC address patern can be the Cisco format
+  (e.g. ca01.1234.0000) or the standard format (e.g. ca:01:12:34:00:00).
 
-* "c7200 remove_pa_binding <instance_name> <slot>" : Remove a Port Adapter
-  binding (if it exists) for the specified slot.
+* "c7200 set_system_id <instance_name> <system_id>" : 
+  Set the system id. (since version 0.2.8-RC3-community)
 
-* "c7200 pa_bindings <instance_name>" : Display all PA bindings for the
-  router instance.
+* "c7200 set_temp_sensor <instance_name> <sensor_id> <temperature>" : 
+  Set temperature for a DS1620 sensor.
+  This can be used to simulate environmental problems like overheat.
+  (since version 0.2.8-RC3-community)
 
-* "c7200 add_nio_binding <instance_name> <slot> <port> <nio_name>":
-  Add a NIO binding for the interface designated by "slot/port".
-  For example: "c7200 add_nio_binding R1 1 0 nio1" (with PA-A1 bound
-  to slot 1) binds the NIO called "nio1" to the interface ATM1/0.
-
-* "c7200 remove_nio_binding <instance_name> <slot> <port>":
-  Removes the NIO binding for the interface designated by "slot/port".
-
-* "c7200 pa_nio_bindings <instance_name> <slot>": Display NIO bindings
-  for all ports of the specified slot.
-
-* "c7200 pa_enable_nio <instance_name> <slot> <port>" : Enable NIO for
-  the interface "slot/port" (used when NIO has to be changed while the
-  virtual router is online).
-
-* "c7200 pa_disable_nio <instance_name> <slot> <port>" : Disable NIO for
-  the interface "slot/port" (used when NIO has to be changed while the
-  virtual router is online).
-
-* "c7200 pa_init_online <instance_name> <slot>" : Initialize a Port
-  Adapter while the router is online (this triggers an OIR event).
-
-* "c7200 pa_stop_online <instance_name> <slot>" : Stop a Port
-  Adapter while the router is online (this triggers an OIR event).
+* "c7200 set_power_supply <instance_name> <power_supply_id> <0|1>" : 
+  Set power supply status.
+  This can be used to simulate environmental problems like power loss.
+  (since version 0.2.8-RC3-community)
 
 * "c7200 show_hardware <instance_name>" : Display virtual hardware info 
+  about the instance.
+
+
+Virtual Cisco 3745 instances module ("c3745")
+==============================================
+
+Available since version 0.2.6-RC3.
+
+* "c3745 list" : List all existing Cisco 3745 instances.
+
+* "c3745 set_iomem <instance_name> <size>" : Set the I/O mem size.
+
+* "c3745 get_mac_addr <instance_name> <mac_addr>" : Get the base MAC
+  address of the router. By default, the address is automatically generated
+  with this pattern : c4<instance_id>.<process_pid>.0000 (Cisco format).
+  (since version 0.2.11)
+
+* "c3745 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+  address of the router. The MAC address patern can be the Cisco format
+  (e.g. c401.1234.0000) or the standard format (e.g. c4:01:12:34:00:00).
+
+* "c3745 set_system_id <instance_name> <system_id>" : 
+  Set the system id. (since version 0.2.8-RC3-community)
+
+* "c3745 show_hardware <instance_name>" : Display virtual hardware info 
+  about the instance.
+
+
+Virtual Cisco 3725 instances module ("c3725")
+==============================================
+
+Available since version 0.2.6-RC3.
+
+* "c3725 list" : List all existing Cisco 3725 instances.
+
+* "c3725 set_iomem <instance_name> <size>" : Set the I/O mem size.
+
+* "c3725 get_mac_addr <instance_name> <mac_addr>" : Get the base MAC
+  address of the router. By default, the address is automatically generated
+  with this pattern : c2<instance_id>.<process_pid>.0000 (Cisco format).
+  (since version 0.2.11)
+
+* "c3725 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+  address of the router. The MAC address patern can be the Cisco format
+  (e.g. c201.1234.0000) or the standard format (e.g. c2:01:12:34:00:00).
+
+* "c3725 set_system_id <instance_name> <system_id>" : 
+  Set the system id. (since version 0.2.8-RC3-community)
+
+* "c3725 show_hardware <instance_name>" : Display virtual hardware info 
   about the instance.
 
 
@@ -202,54 +386,106 @@ Virtual Cisco 3600 instances module ("c3600")
 
 * "c3600 list" : List all existing Cisco 3600 instances.
 
-* "c3600 create <instance_name> <instance_id>" : Create a new router 
-  instance. The ID must be unique and is used to name files on disk.
-
-* "c3600 delete <instance_name>" : Delete the specified instance.
-
-* "c3600 start <instance_name>" : Start the instance. 
-  At least the IOS image must be set.
-
-* "c3600 stop <instance_name>" : Stop the instance. The settings are kept.
-
 * "c3600 set_chassis <instance_name> <chassis_name>" : Set the chassis model.
   Possible values: 3620, 3640, 3660. The default is "3640".
 
-* "c3600 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+* "c3600 set_iomem <instance_name> <size>" : Set the I/O mem size.
+
+* "c3600 get_mac_addr <instance_name> <mac_addr>" : Get the base MAC
   address of the router. By default, the address is automatically generated
   with this pattern : cc<instance_id>.<process_pid>.0000 (Cisco format).
+  (since version 0.2.11)
 
-* "c3600 add_nm_binding <instance_name> <slot> <pa_type>" : Add a
-  Network Module binding for the specified slot.
-  For example: "c3600 add_nm_binding R1 1 NM-1FE-TX" adds a NM-1FE-TX card 
-  into slot 1.
+* "c3600 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+  address of the router. The MAC address patern can be the Cisco format
+  (e.g. cc01.1234.0000) or the standard format (e.g. cc:01:12:34:00:00).
 
-* "c3600 remove_pa_binding <instance_name> <slot>" : Remove a Network Module
-  binding (if it exists) for the specified slot.
-
-* "c3600 nm_bindings <instance_name>" : Display all NM bindings for the
-  router instance.
-
-* "c3600 add_nio_binding <instance_name> <slot> <port> <nio_name>":
-  Add a NIO binding for the interface designated by "slot/port".
-  For example: "c3600 add_nio_binding R1 1 0 nio1" (with NM-1FE-TX bound
-  to slot 1) binds the NIO called "nio1" to the interface FastEthernet1/0.
-
-* "c3600 remove_nio_binding <instance_name> <slot> <port>":
-  Removes the NIO binding for the interface designated by "slot/port".
-
-* "c3600 nm_nio_bindings <instance_name> <slot>": Display NIO bindings
-  for all ports of the specified slot.
-
-* "c3600 nm_enable_nio <instance_name> <slot> <port>" : Enable NIO for
-  the interface "slot/port" (used when NIO has to be changed while the
-  virtual router is online).
-
-* "c3600 nm_disable_nio <instance_name> <slot> <port>" : Disable NIO for
-  the interface "slot/port" (used when NIO has to be changed while the
-  virtual router is online).
+* "c3600 set_system_id <instance_name> <system_id>" : 
+  Set the system id. (since version 0.2.8-RC3-community)
 
 * "c3600 show_hardware <instance_name>" : Display virtual hardware info 
+  about the instance.
+
+
+Virtual Cisco 2691 instances module ("c2691")
+==============================================
+
+Available since version 0.2.6-RC3.
+
+* "c2691 list" : List all existing Cisco 2691 instances.
+
+* "c2691 set_iomem <instance_name> <size>" : Set the I/O mem size.
+
+* "c2691 get_mac_addr <instance_name> <mac_addr>" : Get the base MAC
+  address of the router. By default, the address is automatically generated
+  with this pattern : c0<instance_id>.<process_pid>.0000 (Cisco format).
+  (since version 0.2.11)
+
+* "c2691 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+  address of the router. The MAC address patern can be the Cisco format
+  (e.g. c001.1234.0000) or the standard format (e.g. c0:01:12:34:00:00).
+
+* "c2691 set_system_id <instance_name> <system_id>" : 
+  Set the system id. (since version 0.2.11)
+
+* "c2691 show_hardware <instance_name>" : Display virtual hardware info 
+  about the instance.
+
+
+Virtual Cisco 2600 instances module ("c2600")
+==============================================
+
+Available since version 0.2.7-RC1.
+
+* "c2600 list" : List all existing Cisco 2600 instances.
+
+* "c2600 set_chassis <instance_name> <chassis_name>" : Set the chassis model.
+  Possible values: 2610, 2611, 2620, 2621, 2610XM, 2611XM, 2620XM, 
+  2621XM, 2650XM, 2651XM. The default is "2610".
+
+* "c2600 set_iomem <instance_name> <size>" : Set the I/O mem size.
+
+* "c2600 get_mac_addr <instance_name> <mac_addr>" : Get the base MAC
+  address of the router. By default, the address is automatically generated
+  with this pattern : c8<instance_id>.<process_pid>.0000 (Cisco format).
+  (since version 0.2.11)
+
+* "c2600 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+  address of the router. The MAC address patern can be the Cisco format
+  (e.g. c801.1234.0000) or the standard format (e.g. c8:01:12:34:00:00).
+
+* "c2600 set_system_id <instance_name> <system_id>" : 
+  Set the system id. (since version 0.2.8-RC3-community)
+
+* "c2600 show_hardware <instance_name>" : Display virtual hardware info 
+  about the instance.
+
+
+Virtual Cisco 1700 instances module ("c1700")
+==============================================
+
+Available since version 0.2.8-RC1.
+
+* "c1700 list" : List all existing Cisco 1700 instances.
+
+* "c1700 set_chassis <instance_name> <chassis_name>" : Set the chassis model.
+  Possible values: 1710, 1720, 1721, 1750, 1751, 1760. The default is "1720".
+
+* "c1700 set_iomem <instance_name> <size>" : Set the I/O mem size.
+
+* "c1700 get_mac_addr <instance_name> <mac_addr>" : Get the base MAC
+  address of the router. By default, the address is automatically generated
+  with this pattern : d0<instance_id>.<process_pid>.0000 (Cisco format).
+  (since version 0.2.11)
+
+* "c1700 set_mac_addr <instance_name> <mac_addr>" : Set the base MAC
+  address of the router. The MAC address patern can be the Cisco format
+  (e.g. d001.1234.0000) or the standard format (e.g. d0:01:12:34:00:00).
+
+* "c1700 set_system_id <instance_name> <system_id>" : 
+  Set the system id. (since version 0.2.8-RC3-community)
+
+* "c1700 show_hardware <instance_name>" : Display virtual hardware info 
   about the instance.
 
 
@@ -260,6 +496,21 @@ Network Input/Output (NIO) module ("nio")
 
 * "nio create_udp <nio_name> <local_port> <remote_host> <remote_port>" :
   Create an UDP NIO with the specified parameters.
+
+* "nio create_udp_auto <nio_name> <local_addr> <local_port_start> <local_port_end>" :
+  Create an auto UDP NIO.
+  (since version 0.2.8-RC3-community)
+
+* "nio connect_udp_auto <nio_name> <remote_host> <remote_port>" : 
+  Connect an UDP Auto NIO to a remote host/port.
+  (since version 0.2.8-RC3-community)
+
+* "nio create_mcast <nio_name> <mcast_group> <mcast_port>" : 
+  Create a Multicast NIO.
+  (since version 0.2.8-RC3-community)
+
+* "nio set_mcast_ttl <nio_name> <ttl>" : Set TTL for a Multicast NIO.
+  (since version 0.2.8-RC3-community)
 
 * "nio create_unix <nio_name> <local_file> <remote_file>" : 
   Create an UNIX NIO with the specified parameters.
@@ -273,9 +524,21 @@ Network Input/Output (NIO) module ("nio")
 
 * "nio create_gen_eth <nio_name> <eth_device>" : Create a generic ethernet
   NIO, using PCAP (0.9.4 and greater). It requires root access.
+  Available if compiled with GEN_ETH.
 
 * "nio create_linux_eth <nio_name> <eth_device>" : Create a Linux ethernet
   NIO. It requires root access and is supported only on Linux platforms.
+  Available if compiled with LINUX_ETH.
+
+* "nio create_null <nio_name>" : Create a Null NIO.
+
+* "nio create_fifo <nio_name>" : Create a FIFO NIO.
+
+* "nio crossconnect_fifo <nio_name> <nio_name>" :
+  Establish a cross-connect between 2 FIFO NIO.
+
+* "nio rename <nio_name> <new_name>" : Rename a NIO.
+  (since version 0.2.11)
 
 * "nio delete <nio_name>" : Delete the specified NIO. The NIO can be deleted
   only when it is not anymore in use by another object.
@@ -284,14 +547,45 @@ Network Input/Output (NIO) module ("nio")
   specified NIO. When debugging is enabled, received and emitted packets are
   displayed at screen. It is mainly used to debug interface drivers.
 
+* "nio bind_filter <nio_name> <direction> <filter_name>" :
+  Bind a packet filter.
+  Direction is 0 for receiving, 1 for sending, 2 for both.
+  Filter "freq_drop" drops packets. Filter "capture" captures 
+  packets and is only available if compiled with GEN_ETH.
 
-NIO bridge mdoule ("nio_bridge")
+* "nio unbind_filter <nio_name> <direction>" : Unbind a packet filter.
+
+* "nio setup_filter <nio_name> <direction> [<a3> [...<a10>]]" : 
+  Setup a packet filter for a given NIO. The arguments are passed on 
+  to the setup function of the filter.
+   Filter "freq_drop" has 1 argument "<frequency>". It will drop 
+  everything with a -1 frequency, drop every Nth packet with a 
+  positive frequency, or drop nothing.
+   Filter "capture" has 2 arguments "<link_type_name> <output_file>". 
+  It will capture packets to the target output file. The link type 
+  name is a case-insensitive DLT_ name from the pcap library 
+  constants with the DLT_ part removed.
+
+* "nio get_stats <nio_name>" : Get statistics of a NIO.
+  (since version 0.2.8-RC3-community)
+
+* "nio reset_stats <nio_name>" : Reset statistics of a NIO.
+  (since version 0.2.8-RC3-community)
+
+* "nio set_bandwidth <nio_name> <bandwidth>" : Set bandwidth constraint.
+  (since version 0.2.8-RC3-community)
+
+
+NIO bridge module ("nio_bridge")
 =================================
 
 * "nio_bridge list" : List all NIO bridges.
 
 * "nio_bridge create <bridge_name>" : Create a NIO bridge. A NIO bridge
   acts as a shared media (a kind of hub).
+
+* "nio_bridge rename <bridge_name> <new_name>" : Rename a NIO bridge.
+  (since version 0.2.11)
 
 * "nio_bridge delete <bridge_name>" : Delete a NIO bridge.
 
@@ -302,12 +596,15 @@ NIO bridge mdoule ("nio_bridge")
   NIO as member of the NIO bridge.
 
 
-Virtual Ethernet switch ("ethsw")
+Virtual Ethernet switch module ("ethsw")
 ==================================
 
 * "ethsw list" : List all Ethernet switches.
 
 * "ethsw create <switch_name>" : Create a new Ethernet switch.
+
+* "ethsw rename <switch_name> <new_name>" : Rename an Ethernet switch.
+  (since version 0.2.11)
 
 * "ethsw delete <switch_name>" : Delete the specified Ethernet switch.
 
@@ -324,18 +621,25 @@ Virtual Ethernet switch ("ethsw")
   Set the specified port as a 802.1Q trunk port, with native 
   VLAN <native_vlan>.
 
+* "ethsw set_qinq_port <switch_name> <nio_name> <outer_vlan>" :
+  Set the specified port as a trunk (QinQ) port.
+  (since version 0.2.3-RC3-community)
+
 * "ethsw clear_mac_addr_table <switch_name>" : Clear the MAC address table.
 
 * "ethsw show_mac_addr_table <switch_name>" : Show the MAC address table
   (output format: Ethernet address, VLAN, NIO)
 
 
-Virtual ATM switch ("atmsw")
+Virtual ATM switch module ("atmsw")
 =============================
 
 * "atmsw list" : List all ATM switches.
 
 * "atmsw create <switch_name>" : Create a new ATM switch.
+
+* "atmsw rename <switch_name> <new_name>" : Rename an ATM switch.
+  (since version 0.2.11)
 
 * "atmsw delete <switch_name>" : Delete the specified ATM switch.
 
@@ -356,12 +660,35 @@ Virtual ATM switch ("atmsw")
   Delete a Virtual Channel connection (unidirectional).
 
 
-Virtual Frame-Relay switch ("frsw")
+Virtual ATM bridge module ("atm_bridge")
+==================================
+
+Available since version 0.2.8-RC2.
+
+* "atm_bridge list" : List all ATM bridges.
+
+* "atm_bridge create <bridge_name>" : Create a new ATM bridge.
+
+* "atm_bridge rename <bridge_name> <new_name>" : Rename an ATM bridge.
+  (since version 0.2.11)
+
+* "atm_bridge delete <bridge_name>" : Delete an ATM bridge.
+
+* "atm_bridge configure <bridge_name> <eth_nio> <atm_nio> <vpi> <vci>" : 
+  Configure an ATM bridge.
+
+* "atm_bridge unconfigure <bridge_name>" : Unconfigure an ATM bridge.
+
+
+Virtual Frame-Relay switch module ("frsw")
 ====================================
 
 * "frsw list" : List all Frame-Relay switches.
 
 * "frsw create <switch_name>" : Create a new Frame-Relay switch.
+
+* "frsw rename <switch_name> <new_name>" : Rename a Frame-Relay switch.
+  (since version 0.2.11)
 
 * "frsw delete <switch_name>" : Delete the specified Frame-Relay switch.
 
@@ -373,3 +700,26 @@ Virtual Frame-Relay switch ("frsw")
   <output_nio> <output_dlci>" : 
   Delete a Virtual Circuit connection (unidirectional).
 
+
+Object store module ("object_store")
+====================================
+
+Available since version 0.2.8-RC2.
+
+* "object_store write <object_name> <data>" : 
+  Write an object, data provided in base64 encoding.
+
+* "object_store read <object_name>" : 
+  Read an object and return data in base64 encoding.
+
+* "object_store rename <object_name> <new_name>" : Rename an object.
+  (since version 0.2.11)
+
+* "object_store delete <object_name>" : 
+  Delete an object from the store.
+
+* "object_store delete_all" : 
+  Delete all objects from the store
+
+* "object_store list" : 
+  Object list.
