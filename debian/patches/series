@@ -1,3 +1,1 @@
-10-Makefile-Architecture
-20-stableMakefileHardening
-30-arm_support.patch
+MakefileArchitecture.patch

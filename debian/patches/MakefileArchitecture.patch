@@ -6,27 +6,22 @@ Forwarded: no
 ---
 Index: dynamips/Makefile
 ===================================================================
---- dynamips.orig/Makefile	2013-10-29 11:44:22.408748503 +0000
-+++ dynamips/Makefile	2013-10-29 11:53:00.266238154 +0000
-@@ -1,15 +1,17 @@
--# Makefile for Dynamips 0.2.8
-+# Makefile for Dynamips 0.2.10
- 
- # Host CPU selection
+--- dynamips.orig/Makefile	2014-02-10 20:03:09.000000000 +0000
++++ dynamips/Makefile	2014-02-10 20:22:36.852992794 +0000
+@@ -4,12 +4,12 @@
  #   - Use "x86" for a build on x86 (32-bits)
  #   - Use "amd64" for a build on x86_64 (64-bits)
- #   - Use "ppc32" for a build on powerpc (32-bits)
  #   - Use "nojit" for unsupported architectures.
 -ifeq ($(shell arch),x86_64)
-+ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH_CPU),i386)
-+export DYNAMIPS_ARCH?=x86
-+else
-+ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH_CPU),amd64)
- export DYNAMIPS_ARCH?=amd64
- else
+-export DYNAMIPS_ARCH?=amd64
+-else
 -ifeq ($(shell arch),i686)
--export DYNAMIPS_ARCH?=x86
-+export DYNAMIPS_ARCH?=nojit
++ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH_CPU),i386)
+ export DYNAMIPS_ARCH?=x86
+ else
++ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH_CPU),amd64)
++export DYNAMIPS_ARCH?=amd64
++else
+ export DYNAMIPS_ARCH?=nojit
  endif
  endif
- 
