@@ -8,6 +8,3 @@
 override_dh_compress:
 	dh_compress -XREADME
 
-# Add here commands to install the package into debian/dynamips.
-override_dh_auto_install:
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/dynamips/usr
