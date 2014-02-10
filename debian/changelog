@@ -9,6 +9,8 @@ dynamips (0.2.11-1) UNRELEASED; urgency=low
   * [4a4ab133] Patches to fix architecture detection in Makefile
 		     + 10-Makefile-Architecture - removed
 		     + MakefileArchitecture.patch - added
+  * [98e2662c] debian/rules
+                     + Remove override_dh_install (Makefile fixed for DESTDIR)
 
  -- Daniel Lintott <daniel@serverb.co.uk>  Mon, 10 Feb 2014 20:07:04 +0000
 
