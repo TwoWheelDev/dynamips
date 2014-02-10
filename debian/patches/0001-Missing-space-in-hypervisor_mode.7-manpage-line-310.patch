@@ -1,0 +1,18 @@
+Description: Missing space in hypervisor_mode.7 manpage
+Author: Daniel Lintott <daniel@serverb.co.uk>
+Applied-Upstream: https://github.com/GNS3/dynamips/commit/bbb3dfb64fc420f019e8f0e7ef5dd1bf63488af8
+Last-Update: 2014-02-10
+---
+Index: dynamips/man/hypervisor_mode.7
+===================================================================
+--- dynamips.orig/man/hypervisor_mode.7	2014-02-10 21:27:11.408283036 +0000
++++ dynamips/man/hypervisor_mode.7	2014-02-10 21:27:14.080249446 +0000
+@@ -307,7 +307,7 @@
+ .B vm slot_oir_start <instance_name> <slot_id> <subslot_id>
+ OIR to start a slot/subslot. (since version 0.2.8\-RC3\-community)
+ .TP
+-.Bvm slot_oir_stop <isntance_name> <slot_id> <subslot_id>
++.B vm slot_oir_stop <isntance_name> <slot_id> <subslot_id>
+ OIR to stop a slot/subslot. (since version 0.2.8\-RC3\-community)
+ .RE
+ .TP
