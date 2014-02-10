@@ -11,6 +11,9 @@ dynamips (0.2.11-1) UNRELEASED; urgency=low
 		     + MakefileArchitecture.patch - added
   * [98e2662c] debian/rules
                      + Remove override_dh_install (Makefile fixed for DESTDIR)
+  * [4ec13364] Add patch to fix lintian warning:
+                 + manpage-has-errors-from-man 
+		   hypervisor_mode.7.gz 310: warning: macro `Bvm' not defined
 
  -- Daniel Lintott <daniel@serverb.co.uk>  Mon, 10 Feb 2014 20:07:04 +0000
 
