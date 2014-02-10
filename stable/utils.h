@@ -8,7 +8,6 @@
 
 #include <stdarg.h>
 #include <sys/types.h>
-#include <sys/mman.h>
 #include <sys/time.h>
 #include <time.h>
 #include <netinet/in.h>
@@ -54,6 +53,8 @@
 #elif defined(__x86_64__)
 #define ARCH_BYTE_ORDER ARCH_LITTLE_ENDIAN
 #elif defined(__ia64__)
+#define ARCH_BYTE_ORDER ARCH_LITTLE_ENDIAN
+#elif defined(__arm__) || defined (__aarch64__)
 #define ARCH_BYTE_ORDER ARCH_LITTLE_ENDIAN
 #endif
 
@@ -440,6 +441,18 @@ int m_signal_unblock(int sig);
 
 /* Set non-blocking mode on a file descriptor */
 int m_fd_set_non_block(int fd);
+
+/* Sync a memory zone */
+int memzone_sync(void *addr, size_t len);
+
+/* Sync all mappings of a memory zone */
+int memzone_sync_all(void *addr, size_t len);
+
+/* Unmap a memory zone */
+int memzone_unmap(void *addr, size_t len);
+
+/* Map a memory zone as an executable area */
+u_char *memzone_map_exec_area(size_t len);
 
 /* Map a memory zone from a file */
 u_char *memzone_map_file(int fd,size_t len);

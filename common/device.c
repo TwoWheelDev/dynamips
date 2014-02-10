@@ -10,7 +10,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/mman.h>
 #include <fcntl.h>
 #include <assert.h>
 
@@ -141,14 +140,13 @@ void dev_remove(vm_instance_t *vm,struct vdevice *dev)
       /* Unmap memory mapped file */
       if (dev->host_addr) {
          if (dev->flags & VDEVICE_FLAG_SYNC) {
-            msync((void *)dev->host_addr,dev->phys_len,
-                  MS_SYNC|MS_INVALIDATE);
+            memzone_sync_all((void *)dev->host_addr,dev->phys_len);
          }
          
          vm_log(vm,"MMAP","unmapping of device '%s', "
                 "fd=%d, host_addr=0x%llx, len=0x%x\n",
                 dev->name,dev->fd,(m_uint64_t)dev->host_addr,dev->phys_len);
-         munmap((void *)dev->host_addr,dev->phys_len);
+         memzone_unmap((void *)dev->host_addr,dev->phys_len);
       }
       
       if (dev->flags & VDEVICE_FLAG_SYNC)
@@ -208,7 +206,7 @@ int dev_sync(struct vdevice *dev)
    if (!dev || !dev->host_addr)
       return(-1);
 
-   return(msync((void *)dev->host_addr,dev->phys_len,MS_SYNC));
+   return(memzone_sync((void *)dev->host_addr,dev->phys_len));
 }
 
 /* Remap a device at specified physical address */

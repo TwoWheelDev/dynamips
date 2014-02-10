@@ -22,6 +22,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/mman.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -367,21 +368,57 @@ int m_fd_set_non_block(int fd)
    return(fcntl(fd,F_SETFL, flags | O_NONBLOCK));
 }
 
+/* Sync a memory zone */
+int memzone_sync(void *addr, size_t len)
+{
+   return(msync(addr, len, MS_SYNC));
+}
+
+/* Sync all mappings of a memory zone */
+int memzone_sync_all(void *addr, size_t len)
+{
+   return(msync(addr, len, MS_SYNC | MS_INVALIDATE));
+}
+
+/* Unmap a memory zone */
+int memzone_unmap(void *addr, size_t len)
+{
+   return(munmap(addr, len));
+}
+
+/* Return a memory zone or NULL on error */
+static void *mmap_or_null(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+{
+   void *ptr;
+
+   if ((ptr = mmap(addr, length, prot, flags, fd, offset)) == MAP_FAILED)
+      return(NULL);
+
+   return(ptr);
+}
+
+/* Map a memory zone as an executable area */
+u_char *memzone_map_exec_area(size_t len)
+{
+   return(mmap_or_null(NULL,len,PROT_EXEC|PROT_READ|PROT_WRITE,MAP_SHARED|MAP_ANONYMOUS,-1,(off_t)0));
+}
+
 /* Map a memory zone from a file */
 u_char *memzone_map_file(int fd,size_t len)
 {
-   return(mmap(NULL,len,PROT_READ|PROT_WRITE,MAP_SHARED,fd,(off_t)0));
+   return(mmap_or_null(NULL,len,PROT_READ|PROT_WRITE,MAP_SHARED,fd,(off_t)0));
 }
+
 /* Map a memory zone from a ro file */
 u_char *memzone_map_file_ro(int fd,size_t len)
 {
-   return(mmap(NULL,len,PROT_READ,MAP_PRIVATE,fd,(off_t)0));
+   return(mmap_or_null(NULL,len,PROT_READ,MAP_PRIVATE,fd,(off_t)0));
 }
 
 /* Map a memory zone from a file, with copy-on-write (COW) */
 u_char *memzone_map_cow_file(int fd,size_t len)
 {
-   return(mmap(NULL,len,PROT_READ|PROT_WRITE,MAP_PRIVATE,fd,(off_t)0));
+   return(mmap_or_null(NULL,len,PROT_READ|PROT_WRITE,MAP_PRIVATE,fd,(off_t)0));
 }
 
 /* Create a file to serve as a memory zone */

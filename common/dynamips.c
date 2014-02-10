@@ -15,7 +15,6 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/mman.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <assert.h>
@@ -75,7 +74,7 @@ const char *os_name = STRINGIFY(OSNAME);
 const char *sw_version = DYNAMIPS_VERSION"-"JIT_ARCH;
 
 /* Software version tag */
-const char *sw_version_tag = "2013090721";
+const char *sw_version_tag = "2014021017";
 
 /* Hypervisor */
 int hypervisor_mode = 0;
@@ -526,7 +525,8 @@ static int parse_std_cmd_line(int argc,char *argv[])
 
          /* Alternate ROM */
          case 'R':
-            vm->rom_filename = optarg;
+            free(vm->rom_filename);
+            vm->rom_filename = strdup(optarg);
             break;
 
          case OPT_NOTELMSG:
