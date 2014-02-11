@@ -1,4 +1,4 @@
-dynamips (0.2.11-1) UNRELEASED; urgency=low
+dynamips (0.2.11-1) unstable; urgency=low
 
   * [ab3a8d82] Bump standards-version to 3.9.5 - no changes
   * [b792229e] debian/watch - Remove obsolete githubredir
@@ -15,7 +15,7 @@ dynamips (0.2.11-1) UNRELEASED; urgency=low
                  + manpage-has-errors-from-man 
 		   hypervisor_mode.7.gz 310: warning: macro `Bvm' not defined
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Mon, 10 Feb 2014 20:07:04 +0000
+ -- Daniel Lintott <daniel@serverb.co.uk>  Tue, 11 Feb 2014 11:20:41 +0000
 
 dynamips (0.2.10-2) unstable; urgency=low
 
