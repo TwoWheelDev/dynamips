@@ -8,7 +8,7 @@ Copyright: 2005-2007 Fabien Devaux, Christophe Fillot, MtvE
 License: GPL-2.0+
 
 Files: debian/*
-Copyright: 2013 Daniel Lintott <maint@gns3.serverb.co.uk>
+Copyright: 2013 Daniel Lintott <daniel@serverb.co.uk>
 License: GPL-2.0+
 
 Files: amd64-codegen.h  
