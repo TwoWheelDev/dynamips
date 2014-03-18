@@ -1,3 +1,10 @@
+dynamips (0.2.11-1~bpo70+1) wheezy-backports; urgency=medium
+
+  * Rebuild for wheezy-backports.
+  * Correct my email address in d/copyright
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Tue, 18 Mar 2014 14:54:47 +0000
+
 dynamips (0.2.11-1) unstable; urgency=low
 
   * [ab3a8d82] Bump standards-version to 3.9.5 - no changes
