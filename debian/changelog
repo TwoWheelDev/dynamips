@@ -1,3 +1,16 @@
+dynamips (0.2.12-1) UNRELEASED; urgency=medium
+
+  * Correct my email address in d/copyright
+  * Imported Upstream version 0.2.12
+  * Remove patch applied upstream
+    + 0001-Missing-space-in-hypervisor_mode.7-manpage-line-310.patch
+  * Wrap-and-sort d/control and d/copyright
+  * Move VCS to Alioth
+  * Update debian/copyright
+  * Drop version from libpcap0.8-dev build-depend
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Sat, 05 Apr 2014 19:35:01 +0100
+
 dynamips (0.2.11-1) unstable; urgency=low
 
   * [ab3a8d82] Bump standards-version to 3.9.5 - no changes
