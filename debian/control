@@ -10,7 +10,7 @@ Build-Depends:
 Standards-Version: 3.9.5
 Homepage: http://www.gns3.net
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=users/dlintott-guest/dynamips.git
-Vcs-Git: git://anonscm.debian.org/git/users/dlintott-guest/dynamips.git
+Vcs-Git: git://anonscm.debian.org/users/dlintott-guest/dynamips.git
 XS-Autobuild: yes
 
 Package: dynamips
