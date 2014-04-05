@@ -1,4 +1,4 @@
-dynamips (0.2.12-1) UNRELEASED; urgency=medium
+dynamips (0.2.12-1) unstable; urgency=medium
 
   * Correct my email address in d/copyright
   * Imported Upstream version 0.2.12
@@ -9,7 +9,7 @@ dynamips (0.2.12-1) UNRELEASED; urgency=medium
   * Update debian/copyright
   * Drop version from libpcap0.8-dev build-depend
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Sat, 05 Apr 2014 19:35:01 +0100
+ -- Daniel Lintott <daniel@serverb.co.uk>  Sat, 05 Apr 2014 20:10:17 +0100
 
 dynamips (0.2.11-1) unstable; urgency=low
 
