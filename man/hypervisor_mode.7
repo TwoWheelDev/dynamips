@@ -1,4 +1,4 @@
-.TH HYPERVISOR_MODE 7 "Sep 29, 2013"
+.TH HYPERVISOR_MODE 7 "Mar 27, 2014"
 .\" Please adjust this date whenever revising the manpage.
 .SH NAME
 hypervisor_mode \- allows you to run simultaneously
@@ -307,7 +307,7 @@ Disable NIO of the specified slot/port. (since version 0.2.8\-RC1)
 .B vm slot_oir_start <instance_name> <slot_id> <subslot_id>
 OIR to start a slot/subslot. (since version 0.2.8\-RC3\-community)
 .TP
-.Bvm slot_oir_stop <isntance_name> <slot_id> <subslot_id>
+.B vm slot_oir_stop <isntance_name> <slot_id> <subslot_id>
 OIR to stop a slot/subslot. (since version 0.2.8\-RC3\-community)
 .RE
 .TP
@@ -342,6 +342,13 @@ Write a 16\-bit memory word to physical memory.
 .TP
 .B vm_debug pmem_r16 <instance_name> <cpu_id> <address>
 Read a 16\-bit memory word from physical memory.
+.TP
+.B vm_debug pmem_cfind <instance_name> <cpu_id> <bytes> [<first> [<last>]]
+Find a sequence of bytes in physical memory interval [first,last].
+The byte sequence is composed of hexadecimal characters and must have a length
+multiple of 2. The interval defaults to the complete memory space.
+Only the memory of cacheable devices (ram, rom, disks, ...) is searched.
+(since version 0.2.12)
 .RE
 .TP
 .B Virtual Cisco 7200 instances module ("c7200")
