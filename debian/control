@@ -9,8 +9,8 @@ Build-Depends:
  uuid-dev
 Standards-Version: 3.9.5
 Homepage: http://www.gns3.net
-Vcs-Browser: https://github.com/dlintott/dynamips
-Vcs-Git: https://github.com/dlintott/dynamips.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=users/dlintott-guest/dynamips.git
+Vcs-Git: git://anonscm.debian.org/git/users/dlintott-guest/dynamips.git
 XS-Autobuild: yes
 
 Package: dynamips
