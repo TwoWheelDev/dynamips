@@ -1,22 +1,49 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: dynamips
+Upstream-Contact: Flávio J. Saraiva <flaviojs2005@gmail.com>
 Source: http://www.gns3.net
 
 Files: *
-Copyright: 2005-2007 Fabien Devaux, Christophe Fillot, MtvE
-	   2010-2013 Jeremy Grossman
+Copyright: 1999-2008, Christophe Fillot <cf@utc.fr>
+ 2005-2007, Fabien Devaux, MtvE
+ 2010-2013, Jeremy Grossman
+License: GPL-2.0+
+
+Files: common/base64.c
+Copyright: 2002, Eric S. Raymond
+License: GPL-2.0+
+
+Files: common/fs_nvram.h,
+ common/fs_nvram.c,
+ common/nvram_export.c
+Copyright: 2013, Flávio J. Saraiva <flaviojs2005@gmail.com>
 License: GPL-2.0+
 
 Files: debian/*
-Copyright: 2013 Daniel Lintott <daniel@serverb.co.uk>
+Copyright: 2013-2014, Daniel Lintott <daniel@serverb.co.uk>
 License: GPL-2.0+
 
-Files: amd64-codegen.h
-Copyright: Paolo Molaro (lupus@ximian.com), Intel Corporation (ORP Project), Sergey Chaban (serge@wildwestsoftware.com), Dietmar Maurer (dietmar@ximian.com), Patrik Torstensson, Zalman Stern
+Files: stable/amd64-codegen.h,
+ stable/x86-codegen.h,
+ unstable/amd64-codegen.h,
+ unstable/x86-codegen.h
+Copyright: Paolo Molaro (lupus@ximian.com), 
+ Intel Corporation (ORP Project), 
+ Sergey Chaban (serge@wildwestsoftware.com), 
+ Dietmar Maurer (dietmar@ximian.com), 
+ Patrik Torstensson, 
+ Zalman Stern
 License: GPL-2.0+
 
-Files: x86-codegen.h
-Copyright: Paolo Molaro (lupus@ximian.com), Intel Corporation (ORP Project), Sergey Chaban (serge@wildwestsoftware.com), Dietmar Maurer (dietmar@ximian.com), Patrik Torstensson
+Files: unstable/mips64_ppc32_trans.h,
+ unstable/mips64_ppc32_trans.c
+Copyright: 2006, Christophe Fillot <cf@utc.fr>,
+ 2006-2007, Zhe Fang <fangzhe@msn.com>
+License: GPL-2.0+
+
+Files: unstable/ppc-codegen.h
+Copyright: 2001, Radek Doulik,
+ 2003, Ximian Inc
 License: GPL-2.0+
 
 License: GPL-2.0+
