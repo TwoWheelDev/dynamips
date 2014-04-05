@@ -2,7 +2,11 @@ Source: dynamips
 Section: non-free/net
 Priority: optional
 Maintainer: Daniel Lintott <daniel@serverb.co.uk>
-Build-Depends: debhelper (>= 9), libpcap0.8-dev (>= 0.9.0), libelf-dev, uuid-dev
+Build-Depends:
+ debhelper (>= 9),
+ libelf-dev,
+ libpcap0.8-dev (>= 0.9.0),
+ uuid-dev
 Standards-Version: 3.9.5
 Homepage: http://www.gns3.net
 Vcs-Browser: https://github.com/dlintott/dynamips
@@ -11,8 +15,11 @@ XS-Autobuild: yes
 
 Package: dynamips
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: gns3
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends}
+Suggests:
+ gns3
 Description: Cisco 7200/3600/3725/3745/2600/1700 Router Emulator
  Dynamips emulates Cisco 7200/3600/3725/3745/2600/1700 Routers on a traditional
  PC.  You can use dynamips to create labs. It uses IOS Images (which are not
