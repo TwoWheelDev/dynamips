@@ -1,3 +1,16 @@
+dynamips (0.2.12-1~ppa1) UNRELEASED; urgency=medium
+
+  * Imported Upstream version 0.2.12
+  * Remove patch applied upstream
+    + 0001-Missing-space-in-hypervisor_mode.7-manpage-line-310.patch
+  * Wrap-and-sort d/control and d/copyright
+  * Move VCS to Alioth
+  * Drop version from libpcap0.8-dev build-depend
+  * Update debian/copyright
+  * Drop un-necessary override in d/rules
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Sat, 05 Apr 2014 20:42:14 +0100
+
 dynamips (0.2.11-1~ppa1) quantal; urgency=medium
 
   * Imported Upstream version 0.2.11
