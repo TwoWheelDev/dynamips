@@ -8,6 +8,16 @@ Copyright: 1999-2008, Christophe Fillot <cf@utc.fr>
  2005-2007, Fabien Devaux, MtvE
  2010-2013, Jeremy Grossman
 License: GPL-2.0+
+Comment: Dynamips inlcudes 4 microcode blobs (2 in stable, 2 in 
+ unstable) without source code present. Following discussions 
+ with the new upstream author we have confirmed that these files
+ were created specifically for the Dynamips project. 
+ From the upstream author: I confirmed that it's built 
+ specifically for dynamips while disassembling the microcode:
+  1) It relies on the custom device found in dev_remote.c
+  2) It assumes our hardcoded ("broken") behavior and doesn't 
+     set things that would be needed if the cpu/motherboard 
+     emulation was complete.
 
 Files: common/base64.c
 Copyright: 2002, Eric S. Raymond
