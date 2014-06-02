@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 
 #include "utils.h"
 #include "net.h"
@@ -33,6 +34,7 @@
 #define DEBUG_SDMA      0
 #define DEBUG_MPSC      0
 #define DEBUG_MII       0
+#define DEBUG_ETH       0
 #define DEBUG_ETH_TX    0
 #define DEBUG_ETH_RX    0
 #define DEBUG_ETH_HASH  0
@@ -166,6 +168,8 @@ struct sdma_desc {
 #define GT_SDMA_CMD_EI   0x00800000    /* Enable Interrupt */
 #define GT_SDMA_CMD_F    0x00020000    /* First buffer */
 #define GT_SDMA_CMD_L    0x00010000    /* Last buffer */
+
+#define GT_SDMA_CMD_OFFSET   offsetof(struct sdma_desc,cmd_stat) /* Offset of the Command/Status word */
 
 /* === MultiProtocol Serial Controller (MPSC) ============================= */
 
@@ -328,7 +332,7 @@ enum {
 #define GT_RXDESC_ES           0x00008000    /* Error Summary */
 #define GT_RXDESC_IGMP         0x00004000    /* IGMP packet detected */
 #define GT_RXDESC_HE           0x00002000    /* Hash Table Expired */
-#define GT_RXDESC_M            0x00001000    /* Missed Frame */
+#define GT_RXDESC_M            0x00001000    /* Dst MAC Miss in Hash Table */
 #define GT_RXDESC_FT           0x00000800    /* Frame Type (802.3/Ethernet) */
 #define GT_RXDESC_SF           0x00000100    /* Short Frame Error */
 #define GT_RXDESC_MFL          0x00000080    /* Maximum Frame Length Error */
@@ -685,10 +689,10 @@ void *dev_gt64010_access(cpu_gen_t *cpu,struct vdevice *dev,m_uint32_t offset,
 #if DEBUG_UNKNOWN
       default:
          if (op_type == MTS_READ) {
-            cpu_log(cpu,"GT64010","read from addr 0x%x, pc=0x%llx\n",
+            cpu_log(cpu,"GT64010","read from unknown addr 0x%x, pc=0x%llx\n",
                     offset,cpu_get_pc(cpu));
          } else {
-            cpu_log(cpu,"GT64010","write to addr 0x%x, value=0x%llx, "
+            cpu_log(cpu,"GT64010","write to unknown addr 0x%x, value=0x%llx, "
                     "pc=0x%llx\n",offset,*data,cpu_get_pc(cpu));
          }
 #endif
@@ -821,10 +825,10 @@ void *dev_gt64120_access(cpu_gen_t *cpu,struct vdevice *dev,m_uint32_t offset,
 #if DEBUG_UNKNOWN
       default:
          if (op_type == MTS_READ) {
-            cpu_log(cpu,"GT64120","read from addr 0x%x, pc=0x%llx\n",
+            cpu_log(cpu,"GT64120","read from unknown addr 0x%x, pc=0x%llx\n",
                     offset,cpu_get_pc(cpu));
          } else {
-            cpu_log(cpu,"GT64120","write to addr 0x%x, value=0x%llx, "
+            cpu_log(cpu,"GT64120","write to unknown addr 0x%x, value=0x%llx, "
                     "pc=0x%llx\n",offset,*data,cpu_get_pc(cpu));
          }
 #endif
@@ -1012,7 +1016,7 @@ static int gt_sdma_tx_start(struct gt_data *d,struct sdma_channel *chan)
       /* Clear the OWN bit if this is not the first descriptor */
       if (!(ptxd->cmd_stat & GT_TXDESC_F)) {
          ptxd->cmd_stat &= ~GT_TXDESC_OWN;
-         physmem_copy_u32_to_vm(d->vm,tx_current+4,ptxd->cmd_stat);
+         physmem_copy_u32_to_vm(d->vm,tx_current+GT_SDMA_CMD_OFFSET,ptxd->cmd_stat);
       }
 
       tx_current = ptxd->next_ptr;
@@ -1034,7 +1038,7 @@ static int gt_sdma_tx_start(struct gt_data *d,struct sdma_channel *chan)
    if ((tot_len != 0) && !abort) {
 #if DEBUG_SDMA
       GT_LOG(d,"SDMA%u: sending packet of %u bytes\n",tot_len);
-      mem_dump(log_file,pkt,tot_len);
+      mem_dump(d->vm->log_fd,pkt,tot_len);
 #endif
       /* send it on wire */
       gt_sdma_send_buffer(d,chan->id,pkt,tot_len);
@@ -1045,7 +1049,7 @@ static int gt_sdma_tx_start(struct gt_data *d,struct sdma_channel *chan)
 
    /* Clear the OWN flag of the first descriptor */
    txd0.cmd_stat &= ~GT_TXDESC_OWN;
-   physmem_copy_u32_to_vm(d->vm,tx_start+4,txd0.cmd_stat);
+   physmem_copy_u32_to_vm(d->vm,tx_start+GT_SDMA_CMD_OFFSET,txd0.cmd_stat);
 
    chan->sctdp = tx_current;
 
@@ -1563,6 +1567,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
    struct gt_data *d = dev->priv_data;
    struct eth_port *port = NULL;
    u_int queue;
+#if DEBUG_ETH
+   const char* const access = (op_type == MTS_READ)? "read": "write";
+#endif
 
    if ((offset < 0x80000) || (offset >= 0x90000))
       return(FALSE);
@@ -1576,6 +1583,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
    switch(offset) {
       /* SMI register */
       case 0x80810:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","SMI register\n");
+#endif
          if (op_type == MTS_WRITE) {
             d->smi_reg = *data;
 
@@ -1592,6 +1602,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* ICR: Interrupt Cause Register */
       case 0x84850:
       case 0x88850:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","ICR: Interrupt Cause Register [%s]\n",access);
+#endif
          if (op_type == MTS_READ) {
             *data = port->icr;
          } else {
@@ -1603,6 +1616,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* IMR: Interrupt Mask Register */
       case 0x84858:
       case 0x88858:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","IMR: Interrupt Mask Register [%s]\n",access);
+#endif
          if (op_type == MTS_READ) {
             *data = port->imr;
          } else {
@@ -1614,6 +1630,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* PCR: Port Configuration Register */
       case 0x84800:
       case 0x88800:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","PCR: Port Configuration Register [%s]\n",access);
+#endif
          if (op_type == MTS_READ)
             *data = port->pcr;
          else
@@ -1623,6 +1642,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* PCXR: Port Configuration Extend Register */
       case 0x84808:
       case 0x88808:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","PCXR: Port Configuration Extend Register [%s]\n",access);
+#endif
          if (op_type == MTS_READ) {
             *data = port->pcxr;
             *data |= GT_PCXR_SPEED;
@@ -1633,6 +1655,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* PCMR: Port Command Register */
       case 0x84810:
       case 0x88810:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","PCMR: Port Command Register [%s]\n",access);
+#endif
          if (op_type == MTS_READ)
             *data = port->pcmr;
          else
@@ -1642,6 +1667,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* Port Status Register */
       case 0x84818:
       case 0x88818:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","Port Status Register [%s]\n",access);
+#endif
          if (op_type == MTS_READ)
             *data = 0x0F;
          break;
@@ -1655,6 +1683,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       case 0x88888:
       case 0x8488C:
       case 0x8888C:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","First RX descriptor [%s]\n",access);
+#endif
          queue = (offset >> 2) & 0x03;
          if (op_type == MTS_READ)
             *data = port->rx_start[queue];
@@ -1671,6 +1702,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       case 0x888A8:
       case 0x848AC:
       case 0x888AC:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","Current RX descriptor [%s]\n",access);
+#endif
          queue = (offset >> 2) & 0x03;
          if (op_type == MTS_READ)
             *data = port->rx_current[queue];
@@ -1683,6 +1717,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       case 0x888E0:
       case 0x848E4:
       case 0x888E4:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","Current RX descriptor [%s]\n",access);
+#endif
          queue = (offset >> 2) & 0x01;
          if (op_type == MTS_READ)
             *data = port->tx_current[queue];
@@ -1693,6 +1730,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* Hash Table Pointer */
       case 0x84828:
       case 0x88828:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","Hash Table Pointer [%s]\n",access);
+#endif
          if (op_type == MTS_READ)
             *data = port->ht_addr;
          else
@@ -1702,6 +1742,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* SDCR: SDMA Configuration Register */
       case 0x84840:
       case 0x88840:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","SDCR: SDMA Configuration Register [%s]\n",access);
+#endif
          if (op_type == MTS_READ)
             *data = port->sdcr;
          else
@@ -1711,6 +1754,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
       /* SDCMR: SDMA Command Register */
       case 0x84848:
       case 0x88848:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","SDCMR: SDMA Command Register [%s]\n",access);
+#endif
          if (op_type == MTS_WRITE) {
             /* Start RX DMA */
             if (*data & GT_SDCMR_ERD) {
@@ -1750,8 +1796,12 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
          }
          break;
 
+      /* Ethernet MIB Counters */
       case 0x85800:
       case 0x89800:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","Ethernet MIB Counters - Bytes Received [%s]\n",access);
+#endif
          if (op_type == MTS_READ) {
             *data = port->rx_bytes;
             port->rx_bytes = 0;
@@ -1760,6 +1810,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
 
       case 0x85804:
       case 0x89804:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","Ethernet MIB Counters - Bytes Sent [%s]\n",access);
+#endif
          if (op_type == MTS_READ) {
             *data = port->tx_bytes;
             port->tx_bytes = 0;
@@ -1768,6 +1821,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
 
       case 0x85808:
       case 0x89808:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","Ethernet MIB Counters - Frames Received [%s]\n",access);
+#endif
          if (op_type == MTS_READ) {
             *data = port->rx_frames;
             port->rx_frames = 0;
@@ -1776,6 +1832,9 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
 
       case 0x8580C:
       case 0x8980C:
+#if DEBUG_ETH
+         cpu_log(cpu,"GT96100/ETH","Ethernet MIB Counters - Frames Sent [%s]\n",access);
+#endif
          if (op_type == MTS_READ) {
             *data = port->tx_frames;
             port->tx_frames = 0;
@@ -1795,6 +1854,12 @@ static int gt_eth_access(cpu_gen_t *cpu,struct vdevice *dev,
          }
 #endif
    }
+
+#if DEBUG_ETH
+   cpu_log(cpu,"GT96100/ETH",
+              "DONE register 0x%x, value=0x%llx, pc=0x%llx [%s]\n",
+              offset,*data,cpu_get_pc(cpu),access);
+#endif
 
    return(TRUE);
 }
@@ -2072,10 +2137,10 @@ void *dev_gt96100_access(cpu_gen_t *cpu,struct vdevice *dev,m_uint32_t offset,
 #if DEBUG_UNKNOWN
       default:
          if (op_type == MTS_READ) {
-            cpu_log(cpu,"GT96100","read from addr 0x%x, pc=0x%llx\n",
+            cpu_log(cpu,"GT96100","read from unknown addr 0x%x, pc=0x%llx\n",
                     offset,cpu_get_pc(cpu));
          } else {
-            cpu_log(cpu,"GT96100","write to addr 0x%x, value=0x%llx, "
+            cpu_log(cpu,"GT96100","write to unknown addr 0x%x, value=0x%llx, "
                     "pc=0x%llx\n",offset,*data,cpu_get_pc(cpu));
          }
 #endif
@@ -2093,8 +2158,8 @@ static int gt_eth_handle_port_txqueue(struct gt_data *d,struct eth_port *port,
                                       int queue)
 {   
    u_char pkt[GT_MAX_PKT_SIZE],*pkt_ptr;
-   struct sdma_desc txd0,ctxd,*ptxd;
-   m_uint32_t tx_start,tx_current;
+   struct sdma_desc ctxd;
+   m_uint32_t tx_current;
    m_uint32_t len,tot_len;
    int abort = FALSE;
 
@@ -2106,17 +2171,29 @@ static int gt_eth_handle_port_txqueue(struct gt_data *d,struct eth_port *port,
       return(FALSE);
 
    /* Copy the current txring descriptor */
-   tx_start = tx_current = port->tx_current[queue];
+   tx_current = port->tx_current[queue];
 
-   if (!tx_start)
+   if (!tx_current)
       return(FALSE);
 
-   ptxd = &txd0;
-   gt_sdma_desc_read(d,tx_start,ptxd);
+   gt_sdma_desc_read(d,tx_current,&ctxd);
 
    /* If we don't own the first descriptor, we cannot transmit */
-   if (!(txd0.cmd_stat & GT_TXDESC_OWN))
+   if (!(ctxd.cmd_stat & GT_TXDESC_OWN)) {
+      if (queue == 0) {
+         port->icr |= GT_ICR_TXENDL;
+         port->sdcmr |= GT_SDCMR_STDL;
+         port->sdcmr &= ~GT_SDCMR_TXDL;
+         
+      } else {
+         port->icr |= GT_ICR_TXENDH;
+         port->sdcmr |= GT_SDCMR_STDH;
+         port->sdcmr &= ~GT_SDCMR_TXDH;
+      }
+
+      gt_eth_update_int_status(d,port);
       return(FALSE);
+   }
 
    /* Empty packet for now */
    pkt_ptr = pkt;
@@ -2125,49 +2202,49 @@ static int gt_eth_handle_port_txqueue(struct gt_data *d,struct eth_port *port,
    for(;;) {
 #if DEBUG_ETH_TX
       GT_LOG(d,"gt_eth_handle_txqueue: loop: "
-             "cmd_stat=0x%x, buf_size=0x%x, next_ptr=0x%x, buf_ptr=0x%x\n",
-             ptxd->cmd_stat,ptxd->buf_size,ptxd->next_ptr,ptxd->buf_ptr);
+             "tx_current=0x%08x, cmd_stat=0x%08x, buf_size=0x%08x, next_ptr=0x%08x, buf_ptr=0x%08x\n",
+             tx_current, ctxd.cmd_stat, ctxd.buf_size, ctxd.next_ptr, ctxd.buf_ptr);
 #endif
 
-      if (!(ptxd->cmd_stat & GT_TXDESC_OWN)) {
+      if (!(ctxd.cmd_stat & GT_TXDESC_OWN)) {
+#if DEBUG_ETH_TX
          GT_LOG(d,"gt_eth_handle_txqueue: descriptor not owned!\n");
+#endif
          abort = TRUE;
          break;
       }
 
       /* Copy packet data to the buffer */
-      len = (ptxd->buf_size & GT_TXDESC_BC_MASK) >> GT_TXDESC_BC_SHIFT;
+      len = (ctxd.buf_size & GT_TXDESC_BC_MASK) >> GT_TXDESC_BC_SHIFT;
 
-      physmem_copy_from_vm(d->vm,pkt_ptr,ptxd->buf_ptr,len);
+      physmem_copy_from_vm(d->vm,pkt_ptr,ctxd.buf_ptr,len);
       pkt_ptr += len;
       tot_len += len;
 
-      /* Clear the OWN bit if this is not the first descriptor */
-      if (!(ptxd->cmd_stat & GT_TXDESC_F)) {
-         ptxd->cmd_stat &= ~GT_TXDESC_OWN;
-         physmem_copy_u32_to_vm(d->vm,tx_current,ptxd->cmd_stat);
+      /* Clear the OWN bit if this is not the last descriptor */
+      if (!(ctxd.cmd_stat & GT_TXDESC_L)) {
+         ctxd.cmd_stat &= ~GT_TXDESC_OWN;
+         physmem_copy_u32_to_vm(d->vm,tx_current+GT_SDMA_CMD_OFFSET,ctxd.cmd_stat);
       }
 
-      tx_current = ptxd->next_ptr;
-
       /* Last descriptor or no more desc available ? */
-      if (ptxd->cmd_stat & GT_TXDESC_L)
+      if (ctxd.cmd_stat & GT_TXDESC_L)
          break;
 
-      if (!tx_current) {
+      if (!(ctxd.next_ptr)) {
          abort = TRUE;
          break;
       }
 
       /* Fetch the next descriptor */
+      tx_current = ctxd.next_ptr;
       gt_sdma_desc_read(d,tx_current,&ctxd);
-      ptxd = &ctxd;
    }
 
    if ((tot_len != 0) && !abort) {
 #if DEBUG_ETH_TX
       GT_LOG(d,"Ethernet: sending packet of %u bytes\n",tot_len);
-      mem_dump(log_file,pkt,tot_len);
+      mem_dump(d->vm->log_fd,pkt,tot_len);
 #endif
       /* rewrite ISL header if required */
       cisco_isl_rewrite(pkt,tot_len);
@@ -2180,11 +2257,11 @@ static int gt_eth_handle_port_txqueue(struct gt_data *d,struct eth_port *port,
       port->tx_frames++;
    }
 
-   /* Clear the OWN flag of the first descriptor */
-   txd0.cmd_stat &= ~GT_TXDESC_OWN;
-   physmem_copy_u32_to_vm(d->vm,tx_start+4,txd0.cmd_stat);
+   /* Clear the OWN flag of the last descriptor */
+   ctxd.cmd_stat &= ~GT_TXDESC_OWN;
+   physmem_copy_u32_to_vm(d->vm,tx_current+GT_SDMA_CMD_OFFSET,ctxd.cmd_stat);
 
-   port->tx_current[queue] = tx_current;
+   port->tx_current[queue] = tx_current = ctxd.next_ptr;
    
    /* Notify host about transmitted packet */
    if (queue == 0)
@@ -2354,11 +2431,21 @@ static int gt_eth_hash_lookup(struct gt_data *d,struct eth_port *port,
  *
  * Return values:
  *   - 0: Discard packet ;
- *   - 1: Receive packet ;
- *   - 2: Receive packet and set "M" bit in RX descriptor.
+ *   - 1: Receive packet but set "M" bit in RX descriptor;
+ *   - 2: Receive packet.
  *
  * The documentation is not clear about the M bit in RX descriptor.
  * It is described as "Miss" or "Match" depending on the section.
+ * However, it turns out that IOS treats the bit as "Miss" bit.
+ * If the bit is set, the destination MAC address has not been found
+ * in the hash table, and the frame may be subject to software MAC
+ * address filter associated by IOS with the interface. If the bit
+ * is clear, the destination MAC address has been found in the hash
+ * table and the frame will be accepted by IOS unconditionally.
+ * The M bit is required to correctly handle unicast frames destined
+ * to other MAC addresses when the interface works in promiscuous mode.
+ * IOS puts an interface into promiscuous mode when multicast routing
+ * or bridging has been configured on it.
  */
 static inline int gt_eth_handle_rx_daddr(struct gt_data *d,
                                          struct eth_port *port,
@@ -2474,7 +2561,7 @@ static int gt_eth_handle_rxqueue(struct gt_data *d,u_int port_id,u_int queue,
    if (hash_res == GT_HTLOOKUP_HOP_EXCEEDED)
       rxd0.cmd_stat |= GT_RXDESC_HE;
 
-   if (addr_action == 2)
+   if (addr_action == 1)
       rxd0.cmd_stat |= GT_RXDESC_M;
 
    if (ntohs(hdr->type) <= N_ETH_MTU)   /* 802.3 frame */

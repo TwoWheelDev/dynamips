@@ -1,9 +1,16 @@
-dynamips (0.2.11-1~bpo70+1) wheezy-backports; urgency=medium
+dynamips (0.2.12-1) unstable; urgency=medium
 
-  * Rebuild for wheezy-backports.
   * Correct my email address in d/copyright
+  * Imported Upstream version 0.2.12
+  * Remove patch applied upstream
+    + 0001-Missing-space-in-hypervisor_mode.7-manpage-line-310.patch
+  * Wrap-and-sort d/control and d/copyright
+  * Move VCS to Alioth
+  * Update debian/copyright
+  * Drop version from libpcap0.8-dev build-depend
+  * Drop un-necessary override in d/rules
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Tue, 18 Mar 2014 14:54:47 +0000
+ -- Daniel Lintott <daniel@serverb.co.uk>  Sat, 05 Apr 2014 20:18:59 +0100
 
 dynamips (0.2.11-1) unstable; urgency=low
 
