@@ -1,3 +1,9 @@
+dynamips (0.2.12-1~bpo70+1) wheezy-backports; urgency=medium
+
+  * Rebuild for wheezy-backports.
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Thu, 05 Jun 2014 20:46:33 +0100
+
 dynamips (0.2.12-1) unstable; urgency=medium
 
   * Correct my email address in d/copyright
