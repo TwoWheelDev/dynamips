@@ -5,10 +5,7 @@
  * Utility functions.
  */
 
-/* By default, Cygwin supports only 64 FDs with select()! */
-#ifdef __CYGWIN__
-#define FD_SETSIZE 1024
-#endif
+#include "dynamips_common.h"
 
 #define _GNU_SOURCE
 #include <stdio.h>
@@ -577,7 +574,7 @@ m_uint16_t nvram_cksum(m_uint16_t *ptr,size_t count)
 /* Byte-swap a memory block */
 void mem_bswap32(void *ptr,size_t len)
 {
-   m_uint32_t *p = ptr;
+   m_uint32_t *p _not_aligned = ptr;
    size_t count = len >> 2;
    int i;
 
