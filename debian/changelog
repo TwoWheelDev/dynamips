@@ -1,50 +1,260 @@
-dynamips (0.2.12-1~ppa1) quantal; urgency=medium
+dynamips (0.2.13-1) unstable; urgency=medium
 
-  * VCS Packaging has been moved from GitHub to Alioth and intergrated
-    with Debian Packaging VCS. PPA specific pakaging is in branch PPA
+  * Add statement to copyright regarding binary microcode
+  * Imported Upstream version 0.2.13
+  * Add cmake to build-depends
+  * Update debian/copyright years, email addresses and source
+  * Update homepage in debian/control
+  * Remove Makefile patch no longer required (now using cmake)
+  * Tidy up the installation of docs
+  * Add DEB_LDFLAGS_MAINT_APPEND = -Wl --as-needed to debian/rules to 
+    prevent un-needed linking
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Thu, 14 Aug 2014 17:24:10 +0100
+
+dynamips (0.2.12-1) unstable; urgency=medium
+
+  * Correct my email address in d/copyright
   * Imported Upstream version 0.2.12
   * Remove patch applied upstream
     + 0001-Missing-space-in-hypervisor_mode.7-manpage-line-310.patch
   * Wrap-and-sort d/control and d/copyright
   * Move VCS to Alioth
-  * Drop version from libpcap0.8-dev build-depend
   * Update debian/copyright
+  * Drop version from libpcap0.8-dev build-depend
   * Drop un-necessary override in d/rules
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Sat, 05 Apr 2014 20:53:02 +0100
+ -- Daniel Lintott <daniel@serverb.co.uk>  Sat, 05 Apr 2014 20:18:59 +0100
 
-dynamips (0.2.11-1~ppa1) quantal; urgency=medium
+dynamips (0.2.11-1) unstable; urgency=low
 
-  * Imported Upstream version 0.2.11
-  * Remove patches applied upstream
-    + 20-stableMakefileHardening
-    + 30-arm_support.patch
-  * Rename and update Makefile architecture patch
-  * Add patch to fix error with manpage
-  * Remove override_dh_install (Makefile fixed upstream)
-  * Bump standards-version to 3.9.5
+  * [ab3a8d82] Bump standards-version to 3.9.5 - no changes
+  * [b792229e] debian/watch - Remove obsolete githubredir
+  * [278818eb] Imported Upstream version 0.2.11
+  * [f1fec7b5] Drop patches applied upstream
+		     + 20-stableMakefileHardening
+		     + 30-arm_support.patch
+  * [4a4ab133] Patches to fix architecture detection in Makefile
+		     + 10-Makefile-Architecture - removed
+		     + MakefileArchitecture.patch - added
+  * [98e2662c] debian/rules
+                     + Remove override_dh_install (Makefile fixed for DESTDIR)
+  * [4ec13364] Add patch to fix lintian warning:
+                 + manpage-has-errors-from-man 
+		   hypervisor_mode.7.gz 310: warning: macro `Bvm' not defined
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Tue, 18 Mar 2014 14:17:35 +0000
+ -- Daniel Lintott <daniel@serverb.co.uk>  Tue, 11 Feb 2014 11:20:41 +0000
 
-dynamips (0.2.10-1~ppa2) quantal; urgency=low
+dynamips (0.2.10-2) unstable; urgency=low
 
-  * [2dee5055] Remove duplicate Description in debian/control
-  * [4cd20779] Remove default comment from debian/rules
-  * [dc6a3c33] Rename postinst script
-  * [706e5fc9] Import patches - 10-Makefile-Architecture,
-		20-stableMakefileHardening,30-arm_support.patch
+  * [6864f823] Import ARM Support patch from Ubuntu
+  * [d3ad6218] Update Makefile architecture patch (to fix FTBFS on Ubuntu)
+  * [0e8239c6] Update ARM Support patch to include ARM64
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Sat, 02 Nov 2013 11:44:17 +0000
+ -- Daniel Lintott <daniel@serverb.co.uk>  Tue, 29 Oct 2013 12:33:09 +0000
 
-dynamips (0.2.10-1~ppa1) quantal; urgency=low
+dynamips (0.2.10-1.1) unstable; urgency=low
 
-  * Imported Upstream version 0.2.10
-  * Remove un-needed makefile patch and series
+  * Non-maintainer upload.
+  * Enable autobuild.
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Mon, 23 Sep 2013 11:33:09 +0100
+ -- Andrew Shadura <andrewsh@debian.org>  Thu, 17 Oct 2013 22:46:37 +0200
 
-dynamips (0.2.8-1~ppa1) quantal; urgency=low
+dynamips (0.2.10-1) unstable; urgency=low
 
-  * Imported Upstream Release v0.2.8
+  * New Maintainer (Closes: #725349)
+  * [f0fade5c] Imported Upstream version 0.2.10
+  * [49cfc9c2] Add new architecture patch
+  * [3c9594b0] Correct spelling in README.debian
+  * [642bb50c] Switch build system to debhelper
+  * [cd423ffa] Update debian/watch file
+  * [c1920d03] Add additional files for debhelper
+  * [c4623795] Convert copyright file to machine readable (DEP-5)
+  * [4e7cb75b] Add postinst script
+  * [ddeaf0eb] Update debian/control
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Sun, 07 Jul 2013 21:09:52 +0100
+ -- Daniel Lintott <daniel@serverb.co.uk>  Mon, 07 Oct 2013 19:28:57 +0100
+
+dynamips (0.2.7-0.2.8RC2-5.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix "FTBFS with multiarch paths: cc: error: /usr/lib/libelf.a: No
+    such file or directory": add patch libelf.patch: just use "-lelf".
+    (Closes: #682412).
+    Thanks to gregor herrmann for providing a patch.
+
+ -- Arno Töll <arno@debian.org>  Sat, 15 Sep 2012 20:55:37 +0200
+
+dynamips (0.2.7-0.2.8RC2-5) unstable; urgency=low
+
+  * [36efa51e] changed patch system from dpatch to quilt
+  * [810c744d] [debian/control] bumped standards version
+
+ -- Erik Wenzel <erik@debian.org>  Fri, 10 Sep 2010 23:12:09 +0000
+
+dynamips (0.2.7-0.2.8RC2-4) unstable; urgency=low
+
+  * [5530548a] [patch] added 70_console_bind to allow binds to a
+    configurable inet address (Closes: #504669) - thanks to Justin Azoff
+    <JAzoff@uamail.albany.edu>
+  * [88fd2973] changed file modes in patch dir und removed extra cleanup
+    in clean target of rules
+
+ -- Erik Wenzel <erik@debian.org>  Wed, 04 Feb 2009 22:26:05 +0100
+
+dynamips (0.2.7-0.2.8RC2-3) unstable; urgency=low
+
+  * [1a8805d8] [rules] added mode fix for debian patches in clean target
+  * [064d8cd6] [control] bumped standards-version; added
+    debian/README.source
+  * [de110875] [rules] removed architecture fixes
+  * [fd03c6f8] integrated 90_fix_Makefile_architectures from ubuntu
+    (Closes: 468797) - thanks to Luca Falavigna <dktrkranz@ubuntu.com>
+  * [4113547e] integraded 91_hppa_support.dpatch from ubuntu - thanks to
+    Luca Falavigna <dktrkranz@ubuntu.com>
+  * [87845f36] [control] added vcs fields
+  * [b9556304] [control] added misc:depends as lintian suggests
+  * [fcdd1b50] [control] fixed typo in depends line
+  * [f8766421] removed empty {post,pre}{inst,rm}
+
+ -- Erik Wenzel <erik@debian.org>  Thu, 22 Jan 2009 00:29:33 +0100
+
+dynamips (0.2.7-0.2.8RC2-2) unstable; urgency=low
+
+  * [control] added DebTags
+  * [control] bumped standards-version
+  * [control] added Homepage field
+  * [control] fixed Build dependency
+  * [copyright] added years
+  * added 65_man_macro_fixes.dpatch
+
+ -- Erik Wenzel <erik@debian.org>  Thu, 27 Mar 2008 23:28:47 +0000
+
+dynamips (0.2.7-0.2.8RC2-1) unstable; urgency=low
+
+  * New upstream release
+  * [hypervisor_mode.7] fixed NAME for mandb update on whatis and
+    apropos
+  * [control] added gns3 client information
+
+ -- Erik Wenzel <erik@debian.org>  Wed, 17 Oct 2007 06:22:05 +0000
+
+dynamips (0.2.7-0.2.8RC1-1) unstable; urgency=low
+
+  * New upstream release
+  * [control] changed description
+
+ -- Erik Wenzel <erik@debian.org>  Mon, 10 Sep 2007 11:17:29 +0000
+
+dynamips (0.2.7-1) unstable; urgency=low
+
+  * New upstream release
+  * [control] removed uploader
+
+ -- Erik Wenzel <erik@debian.org>  Fri, 15 Jun 2007 15:42:44 +0000
+
+dynamips (0.2.6-0.2.7RC3-1) unstable; urgency=low
+
+  * New upstream release
+  * created 40_fix_Makefile_linux_pcap_path patch
+  * lintian: fixed typo in README.Debian
+
+ -- Erik Wenzel <erik@debian.org>  Sun, 06 May 2007 09:29:17 +0000
+
+dynamips (0.2.6-0.2.7RC1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Wed, 21 Feb 2007 19:11:37 +0100
+
+dynamips (0.2.5-0.2.6RC5-2) unstable; urgency=low
+
+  * [control] changed section to non-free
+  * Initial release. (Closes: #383068)
+  * corrected version string
+  * [copyright] updated license statements on 2 header files
+
+ -- Erik Wenzel <erik@debian.org>  Sat, 13 Jan 2007 15:16:50 +0000
+
+dynamips (0.2.6RC5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Thu, 21 Dec 2006 14:08:21 +0000
+
+dynamips (0.2.6RC4-1) unstable; urgency=low
+
+  * new upstream release
+  * changed dependency from libelfg0-dev to libelf-dev
+  * removed 10_makefile_install_target.dpatch. integrated in upstream
+  * removed 15_makefile_man_targets.dpatch. partly integrated in upstream
+  * renamed 20_fix_Makefile_clean_target.dpatch
+  * created 30_fix_Makefile_man_path.dpatch
+  * created 35_fix_Makefile_etc.dpatch
+  * removed debian/ dir shipped with upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Mon, 20 Nov 2006 00:29:25 +0100
+
+dynamips (0.2.6RC2-2) unstable; urgency=low
+
+  * Upstream included COPYING file with GNU Licence statement in v0.2.5
+    (Closes: #383068)
+  * watch file added
+  * removed man pages from debian/, upstream included it in tarball
+  * using dpatch now
+  * created 10_makefile_install_target.dpatch
+  * created 15_makefile_man_targets.dpatch: ifdef for Linux inspired by
+    "Achim Dreyer" <adreyer@adreyer.de>, thanks.
+  * created 20_fix_clean_target.dpatch
+  * created 30_use_sharedlib.dpatch
+  * install README.hypervisor doc directory
+
+ -- Erik Wenzel <erik@debian.org>  Mon, 23 Oct 2006 00:45:34 +0200
+
+dynamips (0.2.6RC2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Thu, 19 Oct 2006 16:21:04 +0200
+
+dynamips (0.2.6RC1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Sun, 15 Oct 2006 23:02:03 +0200
+
+dynamips (0.2.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Sat, 16 Sep 2006 14:27:20 +0200
+
+dynamips (0.2.4-0.2.5RC5-2) unstable; urgency=low
+
+  * included nvram_export installation in Makefile patch
+  * dynamips man page written
+  * nvram_export man page written
+  * hypervisor_mode man page written
+
+ -- Erik Wenzel <erik@debian.org>  Sun, 10 Sep 2006 23:15:58 +0200
+
+dynamips (0.2.4-0.2.5RC5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Erik Wenzel <erik@debian.org>  Tue,  5 Sep 2006 08:31:51 +0200
+
+dynamips (0.2.4-0.2.5RC2-2) unstable; urgency=low
+
+  * [control]: Changed Section to contrib/net
+  * [copyright]: added copyright information on header files
+
+ -- Erik Wenzel <erik@debian.org>  Mon, 21 Aug 2006 11:56:23 +0200
+
+dynamips (0.2.4-0.2.5RC2-1) unstable; urgency=low
+
+  * Initial release. (Closes: #383068)
+  * created control, copyright, rules, changelog files
+  * Patch written: Makefile_install_target
+
+ -- Erik Wenzel <erik@debian.org>  Tue,  15 Aug 2006 22:11:56 +0200

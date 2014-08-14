@@ -3,12 +3,13 @@ Section: non-free/net
 Priority: optional
 Maintainer: Daniel Lintott <daniel@serverb.co.uk>
 Build-Depends:
- debhelper (>= 9),
+ cmake,
+ debhelper (>= 9.20120417~),
  libelf-dev,
  libpcap0.8-dev,
  uuid-dev
 Standards-Version: 3.9.5
-Homepage: http://www.gns3.net
+Homepage: http://www.gns3.net/dynamips
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=users/dlintott-guest/dynamips.git
 Vcs-Git: git://anonscm.debian.org/users/dlintott-guest/dynamips.git
 XS-Autobuild: yes
