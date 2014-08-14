@@ -1,3 +1,9 @@
+dynamips (0.2.13-1~ppa1) trusty; urgency=medium
+
+  * Rebuild for GNS3 PPA
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Thu, 14 Aug 2014 17:37:08 +0100
+
 dynamips (0.2.13-1) unstable; urgency=medium
 
   * Add statement to copyright regarding binary microcode
