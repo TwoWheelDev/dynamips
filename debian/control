@@ -3,7 +3,8 @@ Section: non-free/net
 Priority: optional
 Maintainer: Daniel Lintott <daniel@serverb.co.uk>
 Build-Depends:
- debhelper (>= 9),
+ cmake,
+ debhelper (>= 9.20120417~),
  libelf-dev,
  libpcap0.8-dev,
  uuid-dev
