@@ -9,7 +9,7 @@ Build-Depends:
  libpcap0.8-dev,
  uuid-dev
 Standards-Version: 3.9.5
-Homepage: http://www.gns3.net
+Homepage: http://www.gns3.net/dynamips
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=users/dlintott-guest/dynamips.git
 Vcs-Git: git://anonscm.debian.org/users/dlintott-guest/dynamips.git
 XS-Autobuild: yes
