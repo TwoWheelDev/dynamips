@@ -1,3 +1,13 @@
+dynamips (0.2.14-1) unstable; urgency=medium
+
+  * Imported Upstream version 0.2.14
+  * Expand patch description for no-install-docs.patch.
+    Thanks to Gianfranco Costamagna
+  * Update VCS-Browser to use new cgit URL
+  * Bunp standards version to 3.9.6 - no changes necessary
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Mon, 29 Sep 2014 21:00:33 +0100
+
 dynamips (0.2.13-1) unstable; urgency=medium
 
   * Add statement to copyright regarding binary microcode
