@@ -1,22 +1,27 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: dynamips
 Upstream-Contact: Flávio J. Saraiva <flaviojs2005@gmail.com>
-Source: http://www.gns3.net
+Source: https://github.com/GNS3/dynamips
 
 Files: *
 Copyright: 1999-2008, Christophe Fillot <cf@utc.fr>
  2005-2007, Fabien Devaux, MtvE
- 2010-2013, Jeremy Grossman
+ 2010-2013, Jeremy Grossman <jeremy@gns3.net>
+ 2013-2014, Flávio J. Saraiva <flaviojs2005@gmail.com>
 License: GPL-2.0+
+Comment: Dynamips includes 4 microcode blobs (2 in stable, 2 in 
+ unstable) without source code present. Following discussions 
+ with the upstream author we have confirmed that these files
+ were created specifically for the Dynamips project. 
+ From the upstream author: I confirmed that it's built 
+ specifically for dynamips while disassembling the microcode:
+  1) It relies on the custom device found in dev_remote.c
+  2) It assumes our hardcoded ("broken") behavior and doesn't 
+     set things that would be needed if the cpu/motherboard 
+     emulation was complete.
 
 Files: common/base64.c
 Copyright: 2002, Eric S. Raymond
-License: GPL-2.0+
-
-Files: common/fs_nvram.h
- common/fs_nvram.c
- common/nvram_export.c
-Copyright: 2013, Flávio J. Saraiva <flaviojs2005@gmail.com>
 License: GPL-2.0+
 
 Files: debian/*

@@ -1,8 +1,26 @@
-dynamips (0.2.12-1~bpo70+1) wheezy-backports; urgency=medium
+dynamips (0.2.14-1) unstable; urgency=medium
 
-  * Rebuild for wheezy-backports.
+  * Imported Upstream version 0.2.14
+  * Expand patch description for no-install-docs.patch.
+    Thanks to Gianfranco Costamagna
+  * Update VCS-Browser to use new cgit URL
+  * Bunp standards version to 3.9.6 - no changes necessary
 
- -- Daniel Lintott <daniel@serverb.co.uk>  Thu, 05 Jun 2014 20:46:33 +0100
+ -- Daniel Lintott <daniel@serverb.co.uk>  Mon, 29 Sep 2014 21:00:33 +0100
+
+dynamips (0.2.13-1) unstable; urgency=medium
+
+  * Add statement to copyright regarding binary microcode
+  * Imported Upstream version 0.2.13
+  * Add cmake to build-depends
+  * Update debian/copyright years, email addresses and source
+  * Update homepage in debian/control
+  * Remove Makefile patch no longer required (now using cmake)
+  * Tidy up the installation of docs
+  * Add DEB_LDFLAGS_MAINT_APPEND = -Wl --as-needed to debian/rules to 
+    prevent un-needed linking
+
+ -- Daniel Lintott <daniel@serverb.co.uk>  Thu, 14 Aug 2014 17:24:10 +0100
 
 dynamips (0.2.12-1) unstable; urgency=medium
 

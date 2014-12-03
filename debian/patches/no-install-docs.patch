@@ -1,0 +1,17 @@
+Description: Don't install the ChangeLog or COPYING through CMake
+ Debhelper automatically handles both these files. Installing them via upstream
+ build system leads to duplicate files
+Author: Daniel Lintott <daniel@serverb.co.uk>
+Forwarded: not-needed
+Last-Update: 2014-08-14
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -38,8 +38,6 @@
+ add_subdirectory ( unstable )
+ 
+ install_docs (
+-   "ChangeLog"
+-   "COPYING"
+    "MAINTAINERS"
+    "README"
+    "README.hypervisor"
