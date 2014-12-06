@@ -1,0 +1,401 @@
+Description: Fix FTBFS when building on PowerPC/PPC64EL
+ This patch taken from upstream, fixes the FTBFS on PowerPC, caused by the
+ the redefinition of the macro _unused
+Author: Daniel Lintott <daniel@serverb.co.uk>
+Origin: upstream
+Applied-Upstream: https://github.com/GNS3/dynamips/commit/33ef47f2
+Last-Update: 2014-12-06
+diff --git a/common/dev_c6msfc1.c b/common/dev_c6msfc1.c
+index d294fc9..0f51c2f 100644
+--- a/common/dev_c6msfc1.c
++++ b/common/dev_c6msfc1.c
+@@ -246,7 +246,7 @@ static int c6msfc1_set_eeprom(c6msfc1_t *router)
+ }
+ 
+ /* Set the base MAC address of the chassis */
+-_unused static int c6msfc1_burn_mac_addr(c6msfc1_t *router,n_eth_addr_t *addr)
++_Unused static int c6msfc1_burn_mac_addr(c6msfc1_t *router,n_eth_addr_t *addr)
+ {
+    m_uint8_t eeprom_ver;
+ 
+diff --git a/common/dev_c7200_bri.c b/common/dev_c7200_bri.c
+index 6e51078..4c5bf7b 100644
+--- a/common/dev_c7200_bri.c
++++ b/common/dev_c7200_bri.c
+@@ -326,7 +326,7 @@ static int m32_post_interrupt(struct m32_data *d,m_uint32_t iq_value)
+ }
+ 
+ /* Fetch a timeslot assignment */
+-_unused static int m32_fetch_ts_assign(struct m32_data *d,u_int ts_id)
++_Unused static int m32_fetch_ts_assign(struct m32_data *d,u_int ts_id)
+ {
+    m_uint32_t offset;
+ 
+diff --git a/common/dev_mpc860.c b/common/dev_mpc860.c
+index 6afc4d5..f869418 100644
+--- a/common/dev_mpc860.c
++++ b/common/dev_mpc860.c
+@@ -423,7 +423,7 @@ static inline m_uint8_t dpram_r8(struct mpc860_data *d,m_uint16_t offset)
+    return(d->dpram[offset]);
+ }
+ 
+-_unused static inline void dpram_w8(struct mpc860_data *d,m_uint16_t offset,
++_Unused static inline void dpram_w8(struct mpc860_data *d,m_uint16_t offset,
+                             m_uint8_t val)
+ {   
+    d->dpram[offset] = val;
+@@ -456,7 +456,7 @@ static inline m_uint32_t dpram_r32(struct mpc860_data *d,m_uint16_t offset)
+    return(val);
+ }
+ 
+-_unused static inline void dpram_w32(struct mpc860_data *d,m_uint16_t offset,
++_Unused static inline void dpram_w32(struct mpc860_data *d,m_uint16_t offset,
+                              m_uint32_t val)
+ {
+    d->dpram[offset]   = val >> 24;
+diff --git a/common/dev_mv64460.c b/common/dev_mv64460.c
+index 1d91647..ded936a 100644
+--- a/common/dev_mv64460.c
++++ b/common/dev_mv64460.c
+@@ -1125,7 +1125,7 @@ static int mv64460_sdma_handle_rxqueue(struct mv64460_data *d,
+ }
+ 
+ /* Handle RX packet for a SDMA channel */
+-_unused static int mv64460_sdma_handle_rx_pkt(netio_desc_t *nio,
++_Unused static int mv64460_sdma_handle_rx_pkt(netio_desc_t *nio,
+                                       u_char *pkt,ssize_t pkt_len,
+                                       struct mv64460_data *d,void *arg)
+ {
+diff --git a/common/dev_nm_16esw.c b/common/dev_nm_16esw.c
+index 69d8cd5..17648bb 100644
+--- a/common/dev_nm_16esw.c
++++ b/common/dev_nm_16esw.c
+@@ -874,7 +874,7 @@ static int bcm5600_table_write_entry(struct nm_16esw_data *d)
+ }
+ 
+ /* Dump a table (for debugging) */
+-_unused static int bcm5600_table_dump(struct nm_16esw_data *d,m_uint32_t addr)
++_Unused static int bcm5600_table_dump(struct nm_16esw_data *d,m_uint32_t addr)
+ {
+    struct bcm5600_table *table;
+    m_uint32_t *entry;
+diff --git a/common/dev_pa_mc8te1.c b/common/dev_pa_mc8te1.c
+index c7f0c4b..25d3970 100644
+--- a/common/dev_pa_mc8te1.c
++++ b/common/dev_pa_mc8te1.c
+@@ -144,7 +144,7 @@ static void plx9054_doorbell_callback(struct plx_data *plx_data,
+ /*
+  * pa_mc8te1_access()
+  */
+-_unused static void *pa_mc8te1_access(cpu_gen_t *cpu,struct vdevice *dev,
++_Unused static void *pa_mc8te1_access(cpu_gen_t *cpu,struct vdevice *dev,
+                               m_uint32_t offset,u_int op_size,u_int op_type,
+                               m_uint64_t *data)
+ {
+diff --git a/common/dynamips_common.h b/common/dynamips_common.h
+index 6c4d636..9c20f38 100644
+--- a/common/dynamips_common.h
++++ b/common/dynamips_common.h
+@@ -80,9 +80,9 @@
+ #define fastcall
+ #endif
+ 
+-#ifndef _unused
++#ifndef _Unused
+ /* Function that is never used */
+-#define _unused  __attribute__((unused))
++#define _Unused  __attribute__((unused))
+ #endif
+ 
+ #ifndef _maybe_used
+diff --git a/common/fs_nvram.c b/common/fs_nvram.c
+index b308e2a..85855c5 100644
+--- a/common/fs_nvram.c
++++ b/common/fs_nvram.c
+@@ -357,7 +357,7 @@ static m_uint32_t fs_nvram_read32(fs_nvram_t *fs,u_int offset)
+ 
+ 
+ /** Write a 32-bit value to NVRAM. */
+-_unused static void fs_nvram_write32(fs_nvram_t *fs,u_int offset,m_uint32_t val)
++_Unused static void fs_nvram_write32(fs_nvram_t *fs,u_int offset,m_uint32_t val)
+ {
+    fs->write_byte(fs,offset,val >> 24);
+    fs->write_byte(fs,offset+1,val >> 16);
+diff --git a/common/insn_lookup.c b/common/insn_lookup.c
+index 1379644..19c3cb4 100644
+--- a/common/insn_lookup.c
++++ b/common/insn_lookup.c
+@@ -348,7 +348,7 @@ static void ilt_compile(insn_lookup_t *ilt)
+ }
+ 
+ /* Dump an instruction lookup table */
+-_unused static int ilt_dump(char *table_name,insn_lookup_t *ilt)
++_Unused static int ilt_dump(char *table_name,insn_lookup_t *ilt)
+ {
+    rfc_array_t *rfct;
+    char *filename;
+diff --git a/common/rbtree.c b/common/rbtree.c
+index b1533f1..7567f6e 100644
+--- a/common/rbtree.c
++++ b/common/rbtree.c
+@@ -57,7 +57,7 @@ static inline rbtree_node *rbtree_min(rbtree_tree *tree,rbtree_node *x)
+ }
+ 
+ /* Returns the node which represents the maximum value */
+-_unused static inline rbtree_node *rbtree_max(rbtree_tree *tree,rbtree_node *x)
++_Unused static inline rbtree_node *rbtree_max(rbtree_tree *tree,rbtree_node *x)
+ {
+    while(!NIL(tree,x->right))
+       x = x->right;
+diff --git a/common/timer.c b/common/timer.c
+index 477f159..7867949 100644
+--- a/common/timer.c
++++ b/common/timer.c
+@@ -125,7 +125,7 @@ static inline void timer_add_to_queue(timer_queue_t *queue,
+ }
+ 
+ /* Add a timer in a queue atomically */
+-_unused static inline void timer_add_to_queue_atomic(timer_queue_t *queue,
++_Unused static inline void timer_add_to_queue_atomic(timer_queue_t *queue,
+                                              timer_entry_t *timer)
+ {
+    TIMERQ_LOCK(queue);
+diff --git a/stable/mips64_exec.c b/stable/mips64_exec.c
+index 22d5eb4..9922187 100644
+--- a/stable/mips64_exec.c
++++ b/stable/mips64_exec.c
+@@ -289,7 +289,7 @@ void mips64_dump_insn_block(cpu_mips_t *cpu,m_uint64_t pc,u_int count,
+ }
+ 
+ /* Execute a memory operation */
+-_unused static forced_inline void mips64_exec_memop(cpu_mips_t *cpu,int memop,
++_Unused static forced_inline void mips64_exec_memop(cpu_mips_t *cpu,int memop,
+                                             m_uint64_t vaddr,u_int dst_reg,
+                                             int keep_ll_bit)
+ {     
+diff --git a/stable/mips64_jit.c b/stable/mips64_jit.c
+index 22e781a..bc9ef75 100644
+--- a/stable/mips64_jit.c
++++ b/stable/mips64_jit.c
+@@ -261,7 +261,7 @@ static struct mips64_insn_tag *insn_tag_find(mips_insn_t ins)
+ }
+ 
+ /* Check if the specified MIPS instruction is a jump */
+-_unused static struct mips64_insn_jump *insn_jump_find(mips_insn_t ins)
++_Unused static struct mips64_insn_jump *insn_jump_find(mips_insn_t ins)
+ {
+    struct mips64_insn_jump *jump = NULL;
+    int i;
+diff --git a/stable/ppc32_exec.c b/stable/ppc32_exec.c
+index f3eaad9..1bb6cae 100644
+--- a/stable/ppc32_exec.c
++++ b/stable/ppc32_exec.c
+@@ -3325,7 +3325,7 @@ static fastcall int ppc32_exec_SUBFC_dot(cpu_ppc_t *cpu,ppc_insn_t insn)
+ }
+ 
+ /* SUBFCO - Subtract From with Overflow */
+-_unused static fastcall int ppc32_exec_SUBFCO(cpu_ppc_t *cpu,ppc_insn_t insn)
++_Unused static fastcall int ppc32_exec_SUBFCO(cpu_ppc_t *cpu,ppc_insn_t insn)
+ {
+    int rd = bits(insn,21,25);
+    int ra = bits(insn,16,20);
+@@ -3343,7 +3343,7 @@ _unused static fastcall int ppc32_exec_SUBFCO(cpu_ppc_t *cpu,ppc_insn_t insn)
+ }
+ 
+ /* SUBFCO. */
+-_unused static fastcall int ppc32_exec_SUBFCO_dot(cpu_ppc_t *cpu,ppc_insn_t insn)
++_Unused static fastcall int ppc32_exec_SUBFCO_dot(cpu_ppc_t *cpu,ppc_insn_t insn)
+ {
+    int rd = bits(insn,21,25);
+    int ra = bits(insn,16,20);
+diff --git a/stable/ppc32_jit.c b/stable/ppc32_jit.c
+index 92858f4..d3fec97 100644
+--- a/stable/ppc32_jit.c
++++ b/stable/ppc32_jit.c
+@@ -253,7 +253,7 @@ static forced_inline ppc_insn_t insn_fetch(ppc32_jit_tcb_t *b)
+ #define DEBUG_HREG  0
+ 
+ /* Show register allocation status */
+-_unused static void ppc32_jit_show_hreg_status(cpu_ppc_t *cpu)
++_Unused static void ppc32_jit_show_hreg_status(cpu_ppc_t *cpu)
+ {    
+    struct hreg_map *map;
+ 
+@@ -465,7 +465,7 @@ struct ppc32_insn_tag *ppc32_jit_fetch_and_emit(cpu_ppc_t *cpu,
+ }
+ 
+ /* Add end of JIT block */
+-_unused static void ppc32_jit_tcb_add_end(ppc32_jit_tcb_t *b)
++_Unused static void ppc32_jit_tcb_add_end(ppc32_jit_tcb_t *b)
+ {
+    ppc32_set_ia(&b->jit_ptr,b->start_ia+(b->ppc_trans_pos<<2));
+    ppc32_jit_tcb_push_epilog(&b->jit_ptr);
+@@ -757,7 +757,7 @@ static void ppc32_op_dump_opcode(jit_op_t *op)
+ }
+ 
+ /* Dump JIT operations (debugging) */
+-_unused static void ppc32_op_dump(cpu_gen_t *cpu,ppc32_jit_tcb_t *b)
++_Unused static void ppc32_op_dump(cpu_gen_t *cpu,ppc32_jit_tcb_t *b)
+ {
+    m_uint32_t ia = b->start_ia;
+    jit_op_t *op;
+diff --git a/stable/ppc32_vmtest.c b/stable/ppc32_vmtest.c
+index 19c5914..64998c4 100644
+--- a/stable/ppc32_vmtest.c
++++ b/stable/ppc32_vmtest.c
+@@ -156,7 +156,7 @@ static int ppc32_vmtest_init_platform(vm_instance_t *vm)
+ }
+ 
+ /* Boot the RAW image */
+-_unused static int ppc32_vmtest_boot_raw(vm_instance_t *vm)
++_Unused static int ppc32_vmtest_boot_raw(vm_instance_t *vm)
+ {   
+    cpu_ppc_t *cpu;
+ 
+diff --git a/stable/ppc32_x86_trans.c b/stable/ppc32_x86_trans.c
+index cca1831..83fd3ba 100644
+--- a/stable/ppc32_x86_trans.c
++++ b/stable/ppc32_x86_trans.c
+@@ -688,7 +688,7 @@ void ppc32_emit_breakpoint(cpu_ppc_t *cpu,ppc32_jit_tcb_t *b)
+ }
+ 
+ /* Dump regs */
+-_unused static void ppc32_emit_dump_regs(cpu_ppc_t *cpu,ppc32_jit_tcb_t *b)
++_Unused static void ppc32_emit_dump_regs(cpu_ppc_t *cpu,ppc32_jit_tcb_t *b)
+ {   
+    jit_op_t *iop;
+    
+diff --git a/stable/vm.c b/stable/vm.c
+index e2fb742..1c391e0 100644
+--- a/stable/vm.c
++++ b/stable/vm.c
+@@ -112,7 +112,7 @@ void vm_object_free_list(vm_instance_t *vm)
+ }
+ 
+ /* Rebuild the object list pointers */
+-_unused static void vm_object_rebuild_list(vm_instance_t *vm)
++_Unused static void vm_object_rebuild_list(vm_instance_t *vm)
+ {
+    vm_obj_t **obj;
+ 
+diff --git a/unstable/mips64_exec.c b/unstable/mips64_exec.c
+index 757e6ce..3c75548 100644
+--- a/unstable/mips64_exec.c
++++ b/unstable/mips64_exec.c
+@@ -289,7 +289,7 @@ void mips64_dump_insn_block(cpu_mips_t *cpu,m_uint64_t pc,u_int count,
+ }
+ 
+ /* Execute a memory operation */
+-_unused static forced_inline void mips64_exec_memop(cpu_mips_t *cpu,int memop,
++_Unused static forced_inline void mips64_exec_memop(cpu_mips_t *cpu,int memop,
+                                             m_uint64_t vaddr,u_int dst_reg,
+                                             int keep_ll_bit)
+ {     
+diff --git a/unstable/mips64_jit.c b/unstable/mips64_jit.c
+index 4fdfbe0..6c9531f 100644
+--- a/unstable/mips64_jit.c
++++ b/unstable/mips64_jit.c
+@@ -137,7 +137,7 @@ static struct mips64_insn_tag *insn_tag_find(mips_insn_t ins)
+ }
+ 
+ /* Check if the specified MIPS instruction is a jump */
+-_unused static struct mips64_insn_jump *insn_jump_find(mips_insn_t ins)
++_Unused static struct mips64_insn_jump *insn_jump_find(mips_insn_t ins)
+ {
+    struct mips64_insn_jump *jump = NULL;
+    int i;
+diff --git a/unstable/ppc32_exec.c b/unstable/ppc32_exec.c
+index 57ef1b9..5f0002b 100644
+--- a/unstable/ppc32_exec.c
++++ b/unstable/ppc32_exec.c
+@@ -3324,7 +3324,7 @@ static fastcall int ppc32_exec_SUBFC_dot(cpu_ppc_t *cpu,ppc_insn_t insn)
+ }
+ 
+ /* SUBFCO - Subtract From with Overflow */
+-_unused static fastcall int ppc32_exec_SUBFCO(cpu_ppc_t *cpu,ppc_insn_t insn)
++_Unused static fastcall int ppc32_exec_SUBFCO(cpu_ppc_t *cpu,ppc_insn_t insn)
+ {
+    int rd = bits(insn,21,25);
+    int ra = bits(insn,16,20);
+@@ -3342,7 +3342,7 @@ _unused static fastcall int ppc32_exec_SUBFCO(cpu_ppc_t *cpu,ppc_insn_t insn)
+ }
+ 
+ /* SUBFCO. */
+-_unused static fastcall int ppc32_exec_SUBFCO_dot(cpu_ppc_t *cpu,ppc_insn_t insn)
++_Unused static fastcall int ppc32_exec_SUBFCO_dot(cpu_ppc_t *cpu,ppc_insn_t insn)
+ {
+    int rd = bits(insn,21,25);
+    int ra = bits(insn,16,20);
+diff --git a/unstable/ppc32_jit.c b/unstable/ppc32_jit.c
+index f692113..438351a 100644
+--- a/unstable/ppc32_jit.c
++++ b/unstable/ppc32_jit.c
+@@ -252,7 +252,7 @@ static forced_inline ppc_insn_t insn_fetch(ppc32_jit_tcb_t *tcb)
+ #define DEBUG_HREG  0
+ 
+ /* Show register allocation status */
+-_unused static void ppc32_jit_show_hreg_status(cpu_ppc_t *cpu)
++_Unused static void ppc32_jit_show_hreg_status(cpu_ppc_t *cpu)
+ {    
+    struct hreg_map *map;
+ 
+@@ -464,7 +464,7 @@ struct ppc32_insn_tag *ppc32_jit_fetch_and_emit(cpu_ppc_t *cpu,
+ }
+ 
+ /* Add end of JIT block */
+-_unused static void ppc32_jit_tcb_add_end(ppc32_jit_tcb_t *tcb)
++_Unused static void ppc32_jit_tcb_add_end(ppc32_jit_tcb_t *tcb)
+ {
+    ppc32_set_ia(&tcb->jit_ptr,tcb->start_ia+(tcb->ppc_trans_pos<<2));
+    ppc32_jit_tcb_push_epilog(&tcb->jit_ptr);
+@@ -781,7 +781,7 @@ static void ppc32_op_dump_opcode(jit_op_t *op)
+ }
+ 
+ /* Dump JIT operations (debugging) */
+-_unused static void ppc32_op_dump(cpu_gen_t *cpu,ppc32_jit_tcb_t *tcb)
++_Unused static void ppc32_op_dump(cpu_gen_t *cpu,ppc32_jit_tcb_t *tcb)
+ {
+    m_uint32_t ia = tcb->start_ia;
+    jit_op_t *op;
+diff --git a/unstable/ppc32_vmtest.c b/unstable/ppc32_vmtest.c
+index 7455f1f..9c5eae9 100644
+--- a/unstable/ppc32_vmtest.c
++++ b/unstable/ppc32_vmtest.c
+@@ -151,7 +151,7 @@ static int ppc32_vmtest_init_platform(vm_instance_t *vm)
+ }
+ 
+ /* Boot the RAW image */
+-_unused static int ppc32_vmtest_boot_raw(vm_instance_t *vm)
++_Unused static int ppc32_vmtest_boot_raw(vm_instance_t *vm)
+ {   
+    cpu_ppc_t *cpu;
+ 
+diff --git a/unstable/ppc32_x86_trans.c b/unstable/ppc32_x86_trans.c
+index 5921075..2f25426 100644
+--- a/unstable/ppc32_x86_trans.c
++++ b/unstable/ppc32_x86_trans.c
+@@ -655,7 +655,7 @@ void ppc32_emit_breakpoint(cpu_ppc_t *cpu,ppc32_jit_tcb_t *b)
+ }
+ 
+ /* Dump regs */
+-_unused static void ppc32_emit_dump_regs(cpu_ppc_t *cpu,ppc32_jit_tcb_t *b)
++_Unused static void ppc32_emit_dump_regs(cpu_ppc_t *cpu,ppc32_jit_tcb_t *b)
+ {   
+    jit_op_t *iop;
+    
+diff --git a/unstable/vm.c b/unstable/vm.c
+index 2eb3a14..a3dbe37 100644
+--- a/unstable/vm.c
++++ b/unstable/vm.c
+@@ -113,7 +113,7 @@ void vm_object_free_list(vm_instance_t *vm)
+ }
+ 
+ /* Rebuild the object list pointers */
+-_unused static void vm_object_rebuild_list(vm_instance_t *vm)
++_Unused static void vm_object_rebuild_list(vm_instance_t *vm)
+ {
+    vm_obj_t **obj;
+ 
+-- 
+1.7.10.4
+
